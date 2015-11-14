@@ -1,37 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.cache;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.cliffc.high_scale_lib.NonBlockingHashSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 
 import org.apache.cassandra.concurrent.ScheduledExecutors;
 import org.apache.cassandra.config.CFMetaData;
@@ -57,7 +23,6 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
         public OutputStream getOutputStream(File path) throws FileNotFoundException;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(AutoSavingCache.class);
 
     /** True if a cache flush is currently executing: only one may execute at a time. */
     public static final Set<CacheService.CacheType> flushInProgress = new NonBlockingHashSet<CacheService.CacheType>();
@@ -176,7 +141,6 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
             DataInputStream in = null;
             try
             {
-                logger.info(String.format("reading saved cache %s", path));
                 in = new DataInputStream(new LengthAvailableInputStream(new BufferedInputStream(streamFactory.getInputStream(path)), path.length()));
 
                 //Check the schema has not changed since CFs are looked up by name which is ambiguous
@@ -244,9 +208,7 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
                 FileUtils.closeQuietly(in);
             }
         }
-        if (logger.isDebugEnabled())
-            logger.debug("completed reading ({} ms; {} keys) saved cache {}",
-                    TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start), count, path);
+
         return count;
     }
 
@@ -346,10 +308,6 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
                         keysWritten++;
                     }
                 }
-                catch (IOException e)
-                {
-                    throw new FSWriteError(e, tempCacheFile);
-                }
             }
             finally
             {
@@ -364,7 +322,6 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
             if (!tempCacheFile.renameTo(cacheFile))
                 logger.error("Unable to rename {} to {}", tempCacheFile, cacheFile);
 
-            logger.info("Saved {} ({} items) in {} ms", cacheType, keys.size(), TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
         }
 
         private File tempCacheFile()
@@ -388,14 +345,8 @@ public class AutoSavingCache<K extends CacheKey, V> extends InstrumentingCache<K
                     if (file.getName().endsWith(cacheType.toString())
                             || file.getName().endsWith(String.format("%s-%s.db", cacheType.toString(), CURRENT_VERSION)))
                     {
-                        if (!file.delete())
-                            logger.warn("Failed to delete {}", file.getAbsolutePath());
-                    }
+                        file.delete();                    }
                 }
-            }
-            else
-            {
-                logger.warn("Could not list files in {}", savedCachesDir);
             }
         }
     }

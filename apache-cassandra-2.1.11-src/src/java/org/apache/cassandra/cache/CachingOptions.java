@@ -1,31 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.cache;
-
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
-
-import org.apache.cassandra.exceptions.ConfigurationException;
-import static org.apache.cassandra.utils.FBUtilities.fromJsonMap;
 
 /*
 CQL: { 'keys' : 'ALL|NONE', 'rows_per_partition': '200|NONE|ALL' }
@@ -89,12 +61,6 @@ public class CachingOptions
             else
                 throw new ConfigurationException("Only supported CachingOptions parameters are 'keys' and 'rows_per_partition'");
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return String.format("{\"keys\":\"%s\", \"rows_per_partition\":\"%s\"}", keyCache.toString(), rowCache.toString());
     }
 
     private static CachingOptions fromLegacyOption(String cache)
@@ -207,16 +173,6 @@ public class CachingOptions
             return true;
         }
 
-        @Override
-        public int hashCode()
-        {
-            return type.hashCode();
-        }
-        @Override
-        public String toString()
-        {
-            return type.toString();
-        }
     }
 
     public static class RowCache
@@ -255,13 +211,6 @@ public class CachingOptions
         {
             return type.equals(Type.ALL);
         }
-        @Override
-        public String toString()
-        {
-            if (type.equals(Type.ALL)) return "ALL";
-            if (type.equals(Type.NONE)) return "NONE";
-            return String.valueOf(rowsToCache);
-        }
 
         @Override
         public boolean equals(Object o)
@@ -275,14 +224,6 @@ public class CachingOptions
             if (type != rowCache.type) return false;
 
             return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = type.hashCode();
-            result = 31 * result + rowsToCache;
-            return result;
         }
     }
 }

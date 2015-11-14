@@ -1,39 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.cli;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
-import java.util.*;
-
-import org.apache.cassandra.auth.IAuthenticator;
-import org.apache.cassandra.io.util.FileUtils;
-import org.apache.cassandra.thrift.*;
-import org.apache.cassandra.utils.FBUtilities;
-import org.apache.cassandra.utils.JVMStabilityInspector;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.transport.TTransport;
-import jline.ConsoleReader;
-import jline.History;
 
 /**
  * Cassandra Command Line Interface (CLI) Main
@@ -58,19 +23,11 @@ public class CliMain
      */
     public static void connect(String server, int port)
     {
-        if (transport != null)
-            transport.close();
+        transport.close();
 
         try
         {
             transport = sessionState.transportFactory.openTransport(server, port);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace(sessionState.err);
-
-            String error = (e.getCause() == null) ? e.getMessage() : e.getCause().getMessage();
-            throw new RuntimeException("Exception connecting to " + server + "/" + port + ". Reason: " + error + ".");
         }
 
         TBinaryProtocol binaryProtocol = new TBinaryProtocol(transport, true, true);
@@ -89,25 +46,6 @@ public class CliMain
                 thriftClient.login(authRequest);
                 cliClient.setUsername(sessionState.username);
             }
-            catch (AuthenticationException e)
-            {
-                thriftClient = null;
-                sessionState.err.println("Exception during authentication to the cassandra node, " +
-                                         "Verify the keyspace exists, and that you are using the correct credentials.");
-                return;
-            }
-            catch (AuthorizationException e)
-            {
-                thriftClient = null;
-                sessionState.err.println("You are not authorized to use keyspace: " + sessionState.keyspace);
-                return;
-            }
-            catch (TException e)
-            {
-                thriftClient = null;
-                sessionState.err.println("Login failure. Did you specify 'keyspace', 'username' and 'password'?");
-                return;
-            }
         }
 
         if (sessionState.keyspace != null)
@@ -119,16 +57,6 @@ public class CliMain
                 cliClient.setKeySpace(sessionState.keyspace);
                 updateCompletor(CliUtils.getCfNamesByKeySpace(cliClient.getKSMetaData(sessionState.keyspace)));
             }
-            catch (InvalidRequestException | NotFoundException e)
-            {
-                sessionState.err.println("Keyspace " + sessionState.keyspace + " not found");
-                return;
-            }
-            catch (TException e)
-            {
-                sessionState.err.println("Did you specify 'keyspace'?");
-                return;
-            }
         }
 
         // Lookup the cluster name, this is to make it clear which cluster the user is connected to
@@ -137,15 +65,6 @@ public class CliMain
         try
         {
             clusterName = thriftClient.describe_cluster_name();
-        }
-        catch (Exception e)
-        {
-            JVMStabilityInspector.inspectThrowable(e);
-            sessionState.err.println("Exception retrieving information about the cassandra node, check you have connected to the thrift port.");
-
-            e.printStackTrace(sessionState.err);
-
-            return;
         }
 
         sessionState.out.printf("Connected to: \"%s\" on %s/%d%n", clusterName, server, port);
@@ -169,12 +88,7 @@ public class CliMain
      */
     public static boolean isConnected()
     {
-        if (thriftClient == null)
-        {
-            sessionState.out.println("Not connected to a cassandra instance.");
-            return false;
-        }
-        return true;
+        return (thriftClient != null);
     }
 
     public static void updateCompletor(Set<String> candidates)
@@ -191,7 +105,7 @@ public class CliMain
         completer.setCandidateStrings(strs);
     }
 
-    public static void processStatement(String query) throws CharacterCodingException, TException, NotFoundException, InvalidRequestException, NoSuchFieldException, UnavailableException, IllegalAccessException, InstantiationException
+    public static void processStatement(String query) throws 
     {
         cliClient.executeCLIStatement(query);
     }
@@ -201,23 +115,6 @@ public class CliMain
         try
         {
             cliClient.executeCLIStatement(query);
-        }
-        catch (Exception e)
-        {
-            String errorTemplate = sessionState.inFileMode() ? "Line " + lineNumber + " => " : "";
-
-            Throwable exception = (e.getCause() == null) ? e : e.getCause();
-            String message = (exception instanceof InvalidRequestException) ? ((InvalidRequestException) exception).getWhy() : e.getMessage();
-
-            sessionState.err.println(errorTemplate + message);
-
-            if (sessionState.debug || !(e instanceof RuntimeException))
-                e.printStackTrace(sessionState.err);
-
-            if (sessionState.batch || sessionState.inFileMode())
-            {
-                System.exit(4);
-            }
         }
         finally
         {
@@ -238,10 +135,6 @@ public class CliMain
             {
                 connect(sessionState.hostName, sessionState.thriftPort);
             }
-            catch (RuntimeException e)
-            {
-                sessionState.err.println(e.getMessage());
-            }
         }
 
         if ( cliClient == null )
@@ -260,11 +153,6 @@ public class CliMain
             {
                 reader = new BufferedReader(new FileReader(sessionState.filename));
                 evaluateFileStatements(reader);
-            }
-            catch (IOException e)
-            {
-                sessionState.err.println(e.getMessage());
-                System.exit(1);
             }
             finally
             {
@@ -287,10 +175,6 @@ public class CliMain
                 History history = new History(historyFile);
                 reader.setHistory(history);
             }
-            catch (IOException exp)
-            {
-                sessionState.err.printf("Unable to open %s for writing", historyFile.getAbsolutePath());
-            }
         }
         else if (!sessionState.verbose) // if in batch mode but no verbose flag
         {
@@ -311,10 +195,6 @@ public class CliMain
             try
             {
                 line = reader.readLine(prompt);
-            }
-            catch (IOException e)
-            {
-                // retry on I/O Exception
             }
 
             if (line == null)

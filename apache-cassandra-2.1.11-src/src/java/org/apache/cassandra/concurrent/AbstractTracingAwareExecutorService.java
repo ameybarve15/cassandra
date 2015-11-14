@@ -1,45 +1,7 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.concurrent;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.tracing.TraceState;
-import org.apache.cassandra.tracing.Tracing;
-import org.apache.cassandra.utils.concurrent.SimpleCondition;
-import org.apache.cassandra.utils.JVMStabilityInspector;
-
-import static org.apache.cassandra.tracing.Tracing.isTracing;
 
 public abstract class AbstractTracingAwareExecutorService implements TracingAwareExecutorService
 {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTracingAwareExecutorService.class);
-
     protected abstract void addTask(FutureTask<?> futureTask);
     protected abstract void onCompletion();
 
@@ -163,13 +125,6 @@ public abstract class AbstractTracingAwareExecutorService implements TracingAwar
             {
                 result = callable.call();
             }
-            catch (Throwable t)
-            {
-                JVMStabilityInspector.inspectThrowable(t);
-                logger.warn("Uncaught exception on thread {}: {}", Thread.currentThread(), t);
-                result = t;
-                failure = true;
-            }
             finally
             {
                 signalAll();
@@ -201,7 +156,7 @@ public abstract class AbstractTracingAwareExecutorService implements TracingAwar
             return (T) result;
         }
 
-        public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
+        public T get(long timeout, TimeUnit unit) throws 
         {
             await(timeout, unit);
             Object result = this.result;

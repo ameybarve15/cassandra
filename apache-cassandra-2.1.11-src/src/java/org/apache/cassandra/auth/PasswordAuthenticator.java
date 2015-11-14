@@ -1,47 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.auth;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.concurrent.ScheduledExecutors;
-import org.apache.cassandra.config.Config;
-import org.apache.cassandra.cql3.UntypedResultSet;
-import org.apache.cassandra.cql3.QueryProcessor;
-import org.apache.cassandra.cql3.QueryOptions;
-import org.apache.cassandra.cql3.statements.SelectStatement;
-import org.apache.cassandra.db.ConsistencyLevel;
-import org.apache.cassandra.exceptions.*;
-import org.apache.cassandra.service.QueryState;
-import org.apache.cassandra.transport.messages.ResultMessage;
-import org.apache.cassandra.utils.ByteBufferUtil;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * PasswordAuthenticator is an IAuthenticator implementation
@@ -120,14 +77,6 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
                                                                                                   Lists.newArrayList(ByteBufferUtil.bytes(username))));
             result = UntypedResultSet.create(rows.result);
         }
-        catch (RequestValidationException e)
-        {
-            throw new AssertionError(e); // not supposed to happen
-        }
-        catch (RequestExecutionException e)
-        {
-            throw new AuthenticationException(e.toString());
-        }
 
         if (result.isEmpty() || !BCrypt.checkpw(password, result.one().getString(SALTED_HASH)))
             throw new AuthenticationException("Username and/or password are incorrect");
@@ -138,8 +87,6 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
     public void create(String username, Map<Option, Object> options) throws InvalidRequestException, RequestExecutionException
     {
         String password = (String) options.get(Option.PASSWORD);
-        if (password == null)
-            throw new InvalidRequestException("PasswordAuthenticator requires PASSWORD option");
 
         process(String.format("INSERT INTO %s.%s (username, salted_hash) VALUES ('%s', '%s')",
                               Auth.AUTH_KS,
@@ -197,10 +144,6 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
                                          CREDENTIALS_CF);
             authenticateStatement = (SelectStatement) QueryProcessor.parseStatement(query).prepare().statement;
         }
-        catch (RequestValidationException e)
-        {
-            throw new AssertionError(e); // not supposed to happen
-        }
     }
 
     public SaslAuthenticator newAuthenticator()
@@ -222,12 +165,7 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
                                       DEFAULT_USER_NAME,
                                       escape(hashpw(DEFAULT_USER_PASSWORD))),
                         ConsistencyLevel.ONE);
-                logger.info("PasswordAuthenticator created default user '{}'", DEFAULT_USER_NAME);
             }
-        }
-        catch (RequestExecutionException e)
-        {
-            logger.warn("PasswordAuthenticator skipped default user setup: some nodes were not ready");
         }
     }
 
@@ -306,7 +244,6 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
          */
         private Map<String, String> decodeCredentials(byte[] bytes) throws AuthenticationException
         {
-            logger.debug("Decoding credentials from client token");
             byte[] user = null;
             byte[] pass = null;
             int end = bytes.length;
@@ -321,11 +258,6 @@ public class PasswordAuthenticator implements ISaslAwareAuthenticator
                     end = i;
                 }
             }
-
-            if (user == null)
-                throw new AuthenticationException("Authentication ID must not be null");
-            if (pass == null)
-                throw new AuthenticationException("Password must not be null");
 
             Map<String, String> credentials = new HashMap<String, String>();
             credentials.put(IAuthenticator.USERNAME_KEY, new String(user, StandardCharsets.UTF_8));
