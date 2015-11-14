@@ -1,31 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.config;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-
-import org.apache.cassandra.db.*;
-import org.apache.cassandra.db.composites.Composite;
-import org.apache.cassandra.db.marshal.*;
-import org.apache.cassandra.exceptions.RequestValidationException;
-import org.apache.cassandra.cql3.*;
-import org.apache.cassandra.utils.ByteBufferUtil;
 
 /**
  * Defined (and loaded) user types.
@@ -49,28 +22,20 @@ public final class UTMetaData
 
     private static UserType fromSchema(UntypedResultSet.Row row)
     {
-        try
-        {
-            String keyspace = row.getString("keyspace_name");
-            ByteBuffer name = ByteBufferUtil.bytes(row.getString("type_name"));
-            List<String> rawColumns = row.getList("field_names", UTF8Type.instance);
-            List<String> rawTypes = row.getList("field_types", UTF8Type.instance);
+        String keyspace = row.getString("keyspace_name");
+        ByteBuffer name = ByteBufferUtil.bytes(row.getString("type_name"));
+        List<String> rawColumns = row.getList("field_names", UTF8Type.instance);
+        List<String> rawTypes = row.getList("field_types", UTF8Type.instance);
 
-            List<ByteBuffer> columns = new ArrayList<>(rawColumns.size());
-            for (String rawColumn : rawColumns)
-                columns.add(ByteBufferUtil.bytes(rawColumn));
+        List<ByteBuffer> columns = new ArrayList<>(rawColumns.size());
+        for (String rawColumn : rawColumns)
+            columns.add(ByteBufferUtil.bytes(rawColumn));
 
-            List<AbstractType<?>> types = new ArrayList<>(rawTypes.size());
-            for (String rawType : rawTypes)
-                types.add(TypeParser.parse(rawType));
+        List<AbstractType<?>> types = new ArrayList<>(rawTypes.size());
+        for (String rawType : rawTypes)
+            types.add(TypeParser.parse(rawType));
 
-            return new UserType(keyspace, name, columns, types);
-        }
-        catch (RequestValidationException e)
-        {
-            // If it has been written in the schema, it should be valid
-            throw new AssertionError();
-        }
+        return new UserType(keyspace, name, columns, types);
     }
 
     public static Map<ByteBuffer, UserType> fromSchema(Row row)

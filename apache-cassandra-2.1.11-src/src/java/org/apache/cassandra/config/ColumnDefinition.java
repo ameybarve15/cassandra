@@ -1,40 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.config;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
-
-import org.apache.cassandra.cql3.*;
-import org.apache.cassandra.db.*;
-import org.apache.cassandra.db.composites.Composite;
-import org.apache.cassandra.db.marshal.*;
-import org.apache.cassandra.serializers.MarshalException;
-import org.apache.cassandra.exceptions.*;
-import org.apache.cassandra.thrift.ColumnDef;
-import org.apache.cassandra.utils.ByteBufferUtil;
-import org.apache.cassandra.utils.FBUtilities;
-
-import static org.apache.cassandra.utils.FBUtilities.json;
 
 public class ColumnDefinition extends ColumnSpecification
 {
@@ -65,19 +29,6 @@ public class ColumnDefinition extends ColumnSpecification
         REGULAR,
         STATIC,
         COMPACT_VALUE;
-
-        public String serialize()
-        {
-            // For backward compatibility we need to special case CLUSTERING_COLUMN
-            return this == CLUSTERING_COLUMN ? "clustering_key" : this.toString().toLowerCase();
-        }
-
-        public static Kind deserialize(String value)
-        {
-            if (value.equalsIgnoreCase("clustering_key"))
-                return CLUSTERING_COLUMN;
-            return Enum.valueOf(Kind.class, value.toUpperCase());
-        }
     }
 
     public final Kind kind;
@@ -188,46 +139,6 @@ public class ColumnDefinition extends ColumnSpecification
         return componentIndex == null ? 0 : componentIndex;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o)
-            return true;
-
-        if (!(o instanceof ColumnDefinition))
-            return false;
-
-        ColumnDefinition cd = (ColumnDefinition) o;
-
-        return Objects.equal(ksName, cd.ksName)
-            && Objects.equal(cfName, cd.cfName)
-            && Objects.equal(name, cd.name)
-            && Objects.equal(type, cd.type)
-            && Objects.equal(kind, cd.kind)
-            && Objects.equal(componentIndex, cd.componentIndex)
-            && Objects.equal(indexName, cd.indexName)
-            && Objects.equal(indexType, cd.indexType)
-            && Objects.equal(indexOptions, cd.indexOptions);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hashCode(ksName, cfName, name, type, kind, componentIndex, indexName, indexType, indexOptions);
-    }
-
-    @Override
-    public String toString()
-    {
-        return Objects.toStringHelper(this)
-                      .add("name", name)
-                      .add("type", type)
-                      .add("kind", kind)
-                      .add("componentIndex", componentIndex)
-                      .add("indexName", indexName)
-                      .add("indexType", indexType)
-                      .toString();
-    }
 
     public boolean isThriftCompatible()
     {
@@ -397,15 +308,7 @@ public class ColumnDefinition extends ColumnSpecification
             AbstractType<?> comparator = getComponentComparator(rawComparator, componentIndex, kind);
             ColumnIdentifier name = new ColumnIdentifier(comparator.fromString(row.getString(COLUMN_NAME)), comparator);
 
-            AbstractType<?> validator;
-            try
-            {
-                validator = TypeParser.parse(row.getString(TYPE));
-            }
-            catch (RequestValidationException e)
-            {
-                throw new RuntimeException(e);
-            }
+            AbstractType<?> validator = TypeParser.parse(row.getString(TYPE));
 
             IndexType indexType = null;
             if (row.has(INDEX_TYPE))
