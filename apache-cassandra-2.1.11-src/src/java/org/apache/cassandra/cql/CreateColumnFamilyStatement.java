@@ -36,9 +36,7 @@ public class CreateColumnFamilyStatement
             ByteBuffer name = column.getKey().getByteBuffer(comparator, variables);
 
             if (keyAlias != null && keyAlias.equals(name))
-                throw new InvalidRequestException("Invalid column name: "
-                                                  + column.getKey().getText()
-                                                  + ", because it equals to the key_alias.");
+                throw;
 
         }
     }
@@ -85,27 +83,12 @@ public class CreateColumnFamilyStatement
 
         for (Map.Entry<Term, String> col : columns.entrySet())
         {
-            try
-            {
-                ByteBuffer columnName = cfm.comparator.asAbstractType().fromStringCQL2(col.getKey().getText());
-                String validatorClassName = CFPropDefs.comparators.containsKey(col.getValue())
-                                          ? CFPropDefs.comparators.get(col.getValue())
-                                          : col.getValue();
-                AbstractType<?> validator = TypeParser.parse(validatorClassName);
-                columnDefs.add(ColumnDefinition.regularDef(cfm, columnName, validator, null));
-            }
-            catch (ConfigurationException e)
-            {
-                InvalidRequestException ex = new InvalidRequestException(e.toString());
-                ex.initCause(e);
-                throw ex;
-            }
-            catch (SyntaxException e)
-            {
-                InvalidRequestException ex = new InvalidRequestException(e.toString());
-                ex.initCause(e);
-                throw ex;
-            }
+            ByteBuffer columnName = cfm.comparator.asAbstractType().fromStringCQL2(col.getKey().getText());
+            String validatorClassName = CFPropDefs.comparators.containsKey(col.getValue())
+                                      ? CFPropDefs.comparators.get(col.getValue())
+                                      : col.getValue();
+            AbstractType<?> validator = TypeParser.parse(validatorClassName);
+            columnDefs.add(ColumnDefinition.regularDef(cfm, columnName, validator, null));
         }
 
         return columnDefs;
@@ -163,10 +146,6 @@ public class CreateColumnFamilyStatement
 
             return newCFMD.rebuild();
         }
-        catch (ConfigurationException | SyntaxException e)
-        {
-            throw new InvalidRequestException(e.toString());
-        }
     }
 
     private String getPropertyString(String key, String defaultValue)
@@ -193,11 +172,5 @@ public class CreateColumnFamilyStatement
     {
         return cfProps.getPropertySet(key, defaultValue);
     }
-
-    public Map<Term, String> getColumns()
-    {
-        return columns;
-    }
-
 }
 
