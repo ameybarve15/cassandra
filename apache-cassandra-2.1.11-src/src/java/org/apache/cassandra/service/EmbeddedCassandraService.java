@@ -19,6 +19,9 @@
         cassandra.start();
 
  * </pre>
+ <pre>
+ this is highlight
+ </pre>
  */
 public class EmbeddedCassandraService
 {
