@@ -74,10 +74,6 @@ public class YamlConfigurationLoader implements ConfigurationLoader
             propertiesChecker.check();
             return result;
         }
-        catch (YAMLException e)
-        {
-            throw new ConfigurationException("Invalid yaml", e);
-        }
     }
 
     private void logConfig(byte[] configBytes)
@@ -91,7 +87,6 @@ public class YamlConfigurationLoader implements ConfigurationLoader
                 configMap.put(sensitiveKey, "<REDACTED>");
             }
         }
-        logger.info("Node configuration:[" + Joiner.on("; ").join(configMap.entrySet()) + "]");
     }
 
     private static class MissingPropertiesChecker extends PropertyUtils

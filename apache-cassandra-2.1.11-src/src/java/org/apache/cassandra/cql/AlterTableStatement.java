@@ -1,36 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.cql;
 
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.cassandra.cache.CachingOptions;
-import org.apache.cassandra.config.CFMetaData;
-import org.apache.cassandra.config.ColumnDefinition;
-import org.apache.cassandra.config.Schema;
-import org.apache.cassandra.db.marshal.TypeParser;
-import org.apache.cassandra.exceptions.ConfigurationException;
-import org.apache.cassandra.exceptions.InvalidRequestException;
-import org.apache.cassandra.exceptions.RequestValidationException;
-import org.apache.cassandra.exceptions.SyntaxException;
-import org.apache.cassandra.io.compress.CompressionParameters;
 
 public class AlterTableStatement
 {
@@ -103,11 +71,6 @@ public class AlterTableStatement
                         }
                     }
 
-                    if (toUpdate == null)
-                        throw new InvalidRequestException(String.format("Column '%s' was not found in CF '%s'",
-                                    this.columnName,
-                                    columnFamily));
-
                     cfm.addOrReplaceColumnDefinition(toUpdate.withNewType(TypeParser.parse(validator)));
                 }
                 break;
@@ -123,18 +86,10 @@ public class AlterTableStatement
                     }
                 }
 
-                if (toDelete == null)
-                    throw new InvalidRequestException(String.format("Column '%s' was not found in CF '%s'",
-                                                                    this.columnName,
-                                                                    columnFamily));
-
                 cfm.removeColumnDefinition(toDelete);
                 break;
 
             case OPTS:
-                if (cfProps == null)
-                    throw new InvalidRequestException(String.format("ALTER COLUMNFAMILY WITH invoked, but no parameters found"));
-
                 cfProps.validate();
                 applyPropertiesToCFMetadata(cfm, cfProps);
                 break;
@@ -143,14 +98,6 @@ public class AlterTableStatement
         return cfm;
     }
 
-    public String toString()
-    {
-        return String.format("AlterTableStatement(cf=%s, type=%s, column=%s, validator=%s)",
-                             columnFamily,
-                             oType,
-                             columnName,
-                             validator);
-    }
 
     public static void applyPropertiesToCFMetadata(CFMetaData cfm, CFPropDefs cfProps) throws InvalidRequestException, ConfigurationException
     {
