@@ -58,15 +58,23 @@ namespace rb CassandraThrift
 const string VERSION = "19.39.0"
 
 
-#
+# -----------------------------------------------------------------------
 # data structures
 #
 
 /** Basic unit of data within a ColumnFamily.
- * @param name, the name by which this column is set and retrieved.  Maximum 64KB long.
- * @param value. The data associated with the name.  Maximum 2GB long, but in practice you should limit it to small numbers of MB (since Thrift must read the full value into memory to operate on it).
- * @param timestamp. The timestamp is used for conflict detection/resolution when two columns with same name need to be compared.
- * @param ttl. An optional, positive delay (in seconds) after which the column will be automatically deleted. 
+ @param name, 
+    the name by which this column is set and retrieved.  Maximum 64KB long.
+ @param value. 
+    The data associated with the name.  Maximum 2GB long, 
+    but in practice you should limit it to small numbers of MB 
+    (since Thrift must read the full value into memory to operate on it).
+ @param timestamp. 
+    The timestamp is used for conflict detection/resolution 
+    when two columns with same name need to be compared.
+ @param ttl. 
+    An optional, positive delay (in seconds) 
+    after which the column will be automatically deleted. 
  */
 struct Column {
    1: required binary name,
@@ -77,8 +85,11 @@ struct Column {
 
 /** A named list of columns.
  * @param name. see Column.name.
- * @param columns. A collection of standard Columns.  The columns within a super column are defined in an adhoc manner.
- *                 Columns within a super column do not have to have matching structures (similarly named child columns).
+ * @param columns. 
+    A collection of standard Columns.  
+    The columns within a super column are defined in an adhoc manner.
+    Columns within a super column do not have to have matching structures 
+    (similarly named child columns).
  */
 struct SuperColumn {
    1: required binary name,
@@ -96,11 +107,13 @@ struct CounterSuperColumn {
 }
 
 /**
-    Methods for fetching rows/records from Cassandra will return either a single instance of ColumnOrSuperColumn or a list
-    of ColumnOrSuperColumns (get_slice()). If you're looking up a SuperColumn (or list of SuperColumns) then the resulting
-    instances of ColumnOrSuperColumn will have the requested SuperColumn in the attribute super_column. For queries resulting
-    in Columns, those values will be in the attribute column. This change was made between 0.3 and 0.4 to standardize on
-    single query methods that may return either a SuperColumn or Column.
+    Methods for fetching rows/records from Cassandra will 
+    return either a single instance of ColumnOrSuperColumn or a list
+    of ColumnOrSuperColumns (get_slice()). 
+    If you're looking up a SuperColumn (or list of SuperColumns) 
+    then the resulting
+    instances of ColumnOrSuperColumn will have the requested SuperColumn in the attribute super_column. 
+    For queries resulting in Columns, those values will be in the attribute column. 
 
     If the query was on a counter column family, you will either get a counter_column (instead of a column) or a 
     counter_super_column (instead of a super_column)
@@ -117,7 +130,8 @@ struct ColumnOrSuperColumn {
     4: optional CounterSuperColumn counter_super_column
 }
 
-#
+
+# -----------------------------------------------------------------------
 # Exceptions
 # (note that internal server errors will raise a TApplicationException, courtesy of Thrift)
 #
@@ -126,7 +140,8 @@ struct ColumnOrSuperColumn {
 exception NotFoundException {
 }
 
-/** Invalid request could mean keyspace or column family does not exist, required parameters are missing, or a parameter is malformed. 
+/** Invalid request could mean keyspace or column family does not exist, 
+    required parameters are missing, or a parameter is malformed. 
     why contains an associated error message.
 */
 exception InvalidRequestException {
@@ -137,7 +152,8 @@ exception InvalidRequestException {
 exception UnavailableException {
 }
 
-/** RPC timeout was exceeded.  either a node failed mid-operation, or load was too high, or the requested op was too large. */
+/** RPC timeout was exceeded.  either a node failed mid-operation, 
+    or load was too high, or the requested op was too large. */
 exception TimedOutException {
     /**
      * if a write operation was acknowledged by some replicas but not by enough to
@@ -180,6 +196,7 @@ exception SchemaDisagreementException {
 }
 
 
+# -----------------------------------------------------------------------
 #
 # service api
 #
@@ -205,16 +222,29 @@ exception SchemaDisagreementException {
  * when you care more about guaranteeing a certain level of
  * durability, than consistency.
  * 
- * Write consistency levels make the following guarantees before reporting success to the client:
- *   ANY          Ensure that the write has been written once somewhere, including possibly being hinted in a non-target node.
- *   ONE          Ensure that the write has been written to at least 1 node's commit log and memory table
- *   TWO          Ensure that the write has been written to at least 2 node's commit log and memory table
- *   THREE        Ensure that the write has been written to at least 3 node's commit log and memory table
- *   QUORUM       Ensure that the write has been written to <ReplicationFactor> / 2 + 1 nodes
- *   LOCAL_ONE    Ensure that the write has been written to 1 node within the local datacenter (requires NetworkTopologyStrategy)
- *   LOCAL_QUORUM Ensure that the write has been written to <ReplicationFactor> / 2 + 1 nodes, within the local datacenter (requires NetworkTopologyStrategy)
- *   EACH_QUORUM  Ensure that the write has been written to <ReplicationFactor> / 2 + 1 nodes in each datacenter (requires NetworkTopologyStrategy)
- *   ALL          Ensure that the write is written to <code>&lt;ReplicationFactor&gt;</code> nodes before responding to the client.
+ * Write consistency levels make the following guarantees 
+ * before reporting success to the client:
+ 
+ *   ANY          Ensure that the write has been written once somewhere, 
+                    including possibly being hinted in a non-target node.
+ *   ONE          Ensure that the write has been written to 
+                    at least 1 node's commit log and memory table
+ *   TWO          Ensure that the write has been written to 
+                    at least 2 node's commit log and memory table
+ *   THREE        Ensure that the write has been written to 
+                    at least 3 node's commit log and memory table
+ *   QUORUM       Ensure that the write has been written to 
+                    <ReplicationFactor> / 2 + 1 nodes
+ *   LOCAL_ONE    Ensure that the write has been written to 1 node 
+                    within the local datacenter (requires NetworkTopologyStrategy)
+ *   LOCAL_QUORUM Ensure that the write has been written to 
+                    <ReplicationFactor> / 2 + 1 nodes, 
+                    within the local datacenter (requires NetworkTopologyStrategy)
+ *   EACH_QUORUM  Ensure that the write has been written to 
+                    <ReplicationFactor> / 2 + 1 nodes 
+                    in each datacenter (requires NetworkTopologyStrategy)
+ *   ALL          Ensure that the write is written to 
+                    <code>&lt;ReplicationFactor&gt;</code> nodes before responding to the client.
  * 
  * Read consistency levels make the following guarantees before returning successful results to the client:
  *   ANY          Not supported. You probably want ONE instead.
@@ -227,6 +257,7 @@ exception SchemaDisagreementException {
  *   EACH_QUORUM  Returns the record with the most recent timestamp once a majority of replicas within each datacenter have replied.
  *   ALL          Returns the record with the most recent timestamp once all replicas have replied (implies no replica may be down)..
 */
+
 enum ConsistencyLevel {
     ONE = 1,
     QUORUM = 2,
@@ -242,8 +273,8 @@ enum ConsistencyLevel {
 }
 
 /**
-    ColumnParent is used when selecting groups of columns from the same ColumnFamily. In directory structure terms, imagine
-    ColumnParent as ColumnPath + '/../'.
+    ColumnParent is used when selecting groups of columns from the same ColumnFamily. 
+    In directory structure terms, imagine ColumnParent as ColumnPath + '/../'.
 
     See also <a href="cassandra.html#Struct_ColumnPath">ColumnPath</a>
  */
@@ -252,14 +283,15 @@ struct ColumnParent {
     4: optional binary super_column,
 }
 
-/** The ColumnPath is the path to a single column in Cassandra. It might make sense to think of ColumnPath and
- * ColumnParent in terms of a directory structure.
- *
- * ColumnPath is used to looking up a single column.
- *
- * @param column_family. The name of the CF of the column being looked up.
- * @param super_column. The super column name.
- * @param column. The column name.
+/** The ColumnPath is the path to a single column in Cassandra. 
+    It might make sense to think of ColumnPath and
+    ColumnParent in terms of a directory structure.
+ 
+    ColumnPath is used to looking up a single column.
+ 
+    @param column_family. The name of the CF of the column being looked up.
+    @param super_column. The super column name.
+    @param column. The column name.
  */
 struct ColumnPath {
     3: required string column_family,
@@ -268,20 +300,33 @@ struct ColumnPath {
 }
 
 /**
-    A slice range is a structure that stores basic range, ordering and limit information for a query that will return
-    multiple columns. It could be thought of as Cassandra's version of LIMIT and ORDER BY
+    A slice range is a structure that stores basic range, 
+    ordering and limit information for a query that will return multiple columns. 
+    It could be thought of as Cassandra's version of LIMIT and ORDER BY
 
-    @param start. The column name to start the slice with. This attribute is not required, though there is no default value,
-                  and can be safely set to '', i.e., an empty byte array, to start with the first column name. Otherwise, it
-                  must a valid value under the rules of the Comparator defined for the given ColumnFamily.
-    @param finish. The column name to stop the slice at. This attribute is not required, though there is no default value,
-                   and can be safely set to an empty byte array to not stop until 'count' results are seen. Otherwise, it
-                   must also be a valid value to the ColumnFamily Comparator.
-    @param reversed. Whether the results should be ordered in reversed order. Similar to ORDER BY blah DESC in SQL.
-    @param count. How many columns to return. Similar to LIMIT in SQL. May be arbitrarily large, but Thrift will
-                  materialize the whole result into memory before returning it to the client, so be aware that you may
-                  be better served by iterating through slices by passing the last value of one call in as the 'start'
-                  of the next instead of increasing 'count' arbitrarily large.
+    @param start. 
+        The column name to start the slice with. This attribute is not required, 
+        though there is no default value, and can be safely set to '', i.e., 
+        an empty byte array, to start with the first column name. Otherwise, 
+        it must a valid value under the rules of the Comparator defined 
+        for the given ColumnFamily.
+
+    @param finish. 
+        The column name to stop the slice at. This attribute is not required, 
+        though there is no default value, and can be safely set to an empty byte array 
+        to not stop until 'count' results are seen. Otherwise, it must also be a valid 
+        value to the ColumnFamily Comparator.
+
+    @param reversed. 
+        Whether the results should be ordered in reversed order. 
+        Similar to ORDER BY blah DESC in SQL.
+
+    @param count. 
+        How many columns to return. Similar to LIMIT in SQL. May be arbitrarily large, 
+        but Thrift will materialize the whole result into memory before returning it 
+        to the client, so be aware that you may be better served by iterating through 
+        slices by passing the last value of one call in as the 'start' of the next 
+        instead of increasing 'count' arbitrarily large.
  */
 struct SliceRange {
     1: required binary start,
@@ -291,21 +336,28 @@ struct SliceRange {
 }
 
 /**
-    A SlicePredicate is similar to a mathematic predicate (see http://en.wikipedia.org/wiki/Predicate_(mathematical_logic)),
+    A SlicePredicate is similar to a mathematic predicate 
+    (see http://en.wikipedia.org/wiki/Predicate_(mathematical_logic)),
     which is described as "a property that the elements of a set have in common."
 
-    SlicePredicate's in Cassandra are described with either a list of column_names or a SliceRange.  If column_names is
-    specified, slice_range is ignored.
+    SlicePredicate's in Cassandra are described with either a list of column_names 
+    or a SliceRange.  If column_names is specified, slice_range is ignored.
 
-    @param column_name. A list of column names to retrieve. This can be used similar to Memcached's "multi-get" feature
-                        to fetch N known column names. For instance, if you know you wish to fetch columns 'Joe', 'Jack',
-                        and 'Jim' you can pass those column names as a list to fetch all three at once.
-    @param slice_range. A SliceRange describing how to range, order, and/or limit the slice.
+    @param column_name. 
+        A list of column names to retrieve. This can be used similar to Memcached's 
+        "multi-get" feature to fetch N known column names. For instance, if you know 
+        you wish to fetch columns 'Joe', 'Jack', and 'Jim' you can pass those column 
+        names as a list to fetch all three at once.
+
+    @param slice_range. 
+        A SliceRange describing how to range, order, and/or limit the slice.
  */
+
 struct SlicePredicate {
     1: optional list<binary> column_names,
     2: optional SliceRange   slice_range,
 }
+
 
 enum IndexOperator {
     EQ,
@@ -333,8 +385,8 @@ struct IndexClause {
 
 /**
 The semantics of start keys and tokens are slightly different.
-Keys are start-inclusive; tokens are start-exclusive.  Token
-ranges may also wrap -- that is, the end token may be less
+Keys are start-inclusive; tokens are start-exclusive.  
+Token ranges may also wrap -- that is, the end token may be less
 than the start one.  Thus, a range from keyX to keyX is a
 one-element range, but a range from tokenY to tokenY is the
 full ring.
@@ -349,11 +401,13 @@ struct KeyRange {
 }
 
 /**
-    A KeySlice is key followed by the data it maps to. A collection of KeySlice is returned by the get_range_slice operation.
+    A KeySlice is key followed by the data it maps to. 
+    A collection of KeySlice is returned by the get_range_slice operation.
 
     @param key. a row key
-    @param columns. List of data represented by the key. Typically, the list is pared down to only the columns specified by
-                    a SlicePredicate.
+    @param columns. 
+        List of data represented by the key. Typically, the list is 
+        pared down to only the columns specified by a SlicePredicate.
  */
 struct KeySlice {
     1: required binary key,
@@ -375,9 +429,12 @@ struct Deletion {
 }
 
 /**
-    A Mutation is either an insert (represented by filling column_or_supercolumn) or a deletion (represented by filling the deletion attribute).
-    @param column_or_supercolumn. An insert to a column or supercolumn (possibly counter column or supercolumn)
-    @param deletion. A deletion of a column or supercolumn
+    A Mutation is either an insert (represented by filling column_or_supercolumn) 
+    or a deletion (represented by filling the deletion attribute).
+    @param column_or_supercolumn. 
+        An insert to a column or supercolumn (possibly counter column or supercolumn)
+    @param deletion. 
+        A deletion of a column or supercolumn
 */
 struct Mutation {
     1: optional ColumnOrSuperColumn column_or_supercolumn,
@@ -398,10 +455,15 @@ struct CASResult {
 /**
     A TokenRange describes part of the Cassandra ring, it is a mapping from a range to
     endpoints responsible for that range.
-    @param start_token The first token in the range
-    @param end_token The last token in the range
-    @param endpoints The endpoints responsible for the range (listed by their configured listen_address)
-    @param rpc_endpoints The endpoints responsible for the range (listed by their configured rpc_address)
+
+    @param start_token 
+        The first token in the range
+    @param end_token 
+        The last token in the range
+    @param endpoints 
+        The endpoints responsible for the range (listed by their configured listen_address)
+    @param rpc_endpoints 
+        The endpoints responsible for the range (listed by their configured rpc_address)
 */
 struct TokenRange {
     1: required string start_token,
@@ -478,29 +540,17 @@ struct CfDef {
 
     /** @deprecated */
     9: optional double row_cache_size,
-    /** @deprecated */
     11: optional double key_cache_size,
-    /** @deprecated */
     19: optional i32 row_cache_save_period_in_seconds,
-    /** @deprecated */
     20: optional i32 key_cache_save_period_in_seconds,
-    /** @deprecated */
     21: optional i32 memtable_flush_after_mins,
-    /** @deprecated */
     22: optional i32 memtable_throughput_in_mb,
-    /** @deprecated */
     23: optional double memtable_operations_in_millions,
-    /** @deprecated */
     24: optional bool replicate_on_write,
-    /** @deprecated */
     25: optional double merge_shards_chance,
-    /** @deprecated */
     27: optional string row_cache_provider,
-    /** @deprecated */
     31: optional i32 row_cache_keys_to_save,
-    /** @deprecated */
     38: optional bool populate_io_cache_on_flush,
-    /** @deprecated */
     41: optional i32 index_interval,
 }
 
@@ -599,12 +649,16 @@ struct MultiSliceRequest {
     6: optional ConsistencyLevel consistency_level=ConsistencyLevel.ONE
 }
 
+# -----------------------------------------------------------------------
+
 service Cassandra {
   # auth methods
-  void login(1: required AuthenticationRequest auth_request) throws (1:AuthenticationException authnx, 2:AuthorizationException authzx),
+  void login(1: required AuthenticationRequest auth_request) 
+  throws (1:AuthenticationException authnx, 2:AuthorizationException authzx),
  
   # set keyspace
-  void set_keyspace(1: required string keyspace) throws (1:InvalidRequestException ire),
+  void set_keyspace(1: required string keyspace) 
+  throws (1:InvalidRequestException ire),
   
   # retrieval methods
 
@@ -615,7 +669,7 @@ service Cassandra {
   ColumnOrSuperColumn get(1:required binary key,
                           2:required ColumnPath column_path,
                           3:required ConsistencyLevel consistency_level=ConsistencyLevel.ONE)
-                      throws (1:InvalidRequestException ire, 2:NotFoundException nfe, 3:UnavailableException ue, 4:TimedOutException te),
+    throws (1:InvalidRequestException ire, 2:NotFoundException nfe, 3:UnavailableException ue, 4:TimedOutException te),
 
   /**
     Get the group of columns contained by column_parent (either a ColumnFamily name or a ColumnFamily/SuperColumn name

@@ -35,7 +35,7 @@ import org.apache.thrift.TEnum;
 /**
  * CQL query compression
  */
-public enum Compression implements org.apache.thrift.TEnum {
+public enum Compression implements TEnum {
   GZIP(1),
   NONE(2);
 

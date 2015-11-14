@@ -1,39 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.gms;
-
-import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.config.DatabaseDescriptor;
-import org.apache.cassandra.io.FSWriteError;
-import org.apache.cassandra.io.util.FileUtils;
-import org.apache.cassandra.utils.FBUtilities;
 
 /**
  * This FailureDetector is an implementation of the paper titled
@@ -42,7 +6,6 @@ import org.apache.cassandra.utils.FBUtilities;
  */
 public class FailureDetector implements IFailureDetector, FailureDetectorMBean
 {
-    private static final Logger logger = LoggerFactory.getLogger(FailureDetector.class);
     public static final String MBEAN_NAME = "org.apache.cassandra.net:type=FailureDetector";
     private static final int SAMPLE_SIZE = 1000;
     protected static final long INITIAL_VALUE_NANOS = TimeUnit.NANOSECONDS.convert(getInitialValue(), TimeUnit.MILLISECONDS);
@@ -56,7 +19,6 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
         if (System.getProperty("cassandra.max_local_pause_in_ms") != null)
         {
             long pause = Long.parseLong(System.getProperty("cassandra.max_local_pause_in_ms"));
-            logger.warn("Overriding max local pause time to {}ms", pause);
             return pause * 1000000L;
         }
         else
@@ -72,7 +34,8 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
     private final double PHI_FACTOR = 1.0 / Math.log(10.0); // 0.434...
 
     private final Map<InetAddress, ArrivalWindow> arrivalSamples = new Hashtable<InetAddress, ArrivalWindow>();
-    private final List<IFailureDetectionEventListener> fdEvntListeners = new CopyOnWriteArrayList<IFailureDetectionEventListener>();
+    private final List<IFailureDetectionEventListener> fdEvntListeners 
+        = new CopyOnWriteArrayList<IFailureDetectionEventListener>();
 
     public FailureDetector()
     {
@@ -97,7 +60,6 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
         }
         else
         {
-            logger.info("Overriding FD INITIAL_VALUE to {}ms", newvalue);
             return Integer.parseInt(newvalue);
         }
     }
@@ -218,15 +180,12 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
         // we could assert not-null, but having isAlive fail screws a node over so badly that
         // it's worth being defensive here so minor bugs don't cause disproportionate
         // badness.  (See CASSANDRA-1463 for an example).
-        if (epState == null)
-            logger.error("unknown endpoint {}", ep);
+
         return epState != null && epState.isAlive();
     }
 
     public void report(InetAddress ep)
     {
-        if (logger.isTraceEnabled())
-            logger.trace("reporting {}", ep);
         long now = System.nanoTime();
         ArrivalWindow heartbeatWindow = arrivalSamples.get(ep);
         if (heartbeatWindow == null)
@@ -360,22 +319,10 @@ class ArrayBackedBoundedStats
     {
         return isFilled ? arrivalIntervals.length : index;
     }
-
-    public double mean()
-    {
-        return mean;
-    }
-
-    public long[] getArrivalIntervals()
-    {
-        return arrivalIntervals;
-    }
-
 }
 
 class ArrivalWindow
 {
-    private static final Logger logger = LoggerFactory.getLogger(ArrivalWindow.class);
     private long tLast = 0L;
     private final ArrayBackedBoundedStats arrivalIntervals;
 
@@ -405,7 +352,6 @@ class ArrivalWindow
         }
         else
         {
-            logger.info("Overriding FD MAX_INTERVAL to {}ms", newvalue);
             return TimeUnit.NANOSECONDS.convert(Integer.parseInt(newvalue), TimeUnit.MILLISECONDS);
         }
     }
@@ -418,8 +364,7 @@ class ArrivalWindow
             long interArrivalTime = (value - tLast);
             if (interArrivalTime <= MAX_INTERVAL_IN_NANO)
                 arrivalIntervals.add(interArrivalTime);
-            else
-                logger.debug("Ignoring interval time of {} for {}", interArrivalTime, ep);
+
         }
         else
         {
@@ -442,11 +387,6 @@ class ArrivalWindow
         assert arrivalIntervals.mean() > 0 && tLast > 0; // should not be called before any samples arrive
         long t = tnow - tLast;
         return t / mean();
-    }
-
-    public String toString()
-    {
-        return Arrays.toString(arrivalIntervals.getArrivalIntervals());
     }
 }
 
