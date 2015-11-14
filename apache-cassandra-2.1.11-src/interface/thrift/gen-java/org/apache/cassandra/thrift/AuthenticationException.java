@@ -57,10 +57,11 @@ import org.slf4j.LoggerFactory;
 /**
  * invalid authentication request (invalid keyspace, user does not exist, or credentials invalid)
  */
-public class AuthenticationException extends TException implements org.apache.thrift.TBase<AuthenticationException, AuthenticationException._Fields>, java.io.Serializable, Cloneable, Comparable<AuthenticationException> {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("AuthenticationException");
+public class AuthenticationException extends TException implements TBase<AuthenticationException, AuthenticationException._Fields>, 
+            java.io.Serializable, Cloneable, Comparable<AuthenticationException> {
+  private static final TStruct STRUCT_DESC = new TStruct("AuthenticationException");
 
-  private static final org.apache.thrift.protocol.TField WHY_FIELD_DESC = new org.apache.thrift.protocol.TField("why", org.apache.thrift.protocol.TType.STRING, (short)1);
+  private static final TField WHY_FIELD_DESC = new TField("why", TType.STRING, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
