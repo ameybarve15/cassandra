@@ -1,29 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.thrift;
 
-import com.google.common.collect.Sets;
-import org.apache.thrift.transport.TFramedTransport;
-import org.apache.thrift.transport.TSSLTransportFactory;
-import org.apache.thrift.transport.TTransport;
-
-import java.util.Map;
-import java.util.Set;
 
 public class SSLTransportFactory implements ITransportFactory
 {
@@ -50,32 +25,28 @@ public class SSLTransportFactory implements ITransportFactory
     private String[] cipherSuites;
 
     @Override
-    public TTransport openTransport(String host, int port) throws Exception
+    public TTransport openTransport(String host, int port)
     {
-        TSSLTransportFactory.TSSLTransportParameters params = new TSSLTransportFactory.TSSLTransportParameters(protocol, cipherSuites);
+        TSSLTransportFactory.TSSLTransportParameters params 
+            = new TSSLTransportFactory.TSSLTransportParameters(protocol, cipherSuites);
         params.setTrustStore(truststore, truststorePassword);
-        if (null != keystore)
-            params.setKeyStore(keystore, keystorePassword);
+        params.setKeyStore(keystore, keystorePassword);
+        
         TTransport trans = TSSLTransportFactory.getClientSocket(host, port, SOCKET_TIMEOUT, params);
         int frameSize = 15 * 1024 * 1024; // 15 MiB
+        
         return new TFramedTransport(trans, frameSize);
     }
 
     @Override
     public void setOptions(Map<String, String> options)
     {
-        if (options.containsKey(TRUSTSTORE))
-            truststore = options.get(TRUSTSTORE);
-        if (options.containsKey(TRUSTSTORE_PASSWORD))
-            truststorePassword = options.get(TRUSTSTORE_PASSWORD);
-        if (options.containsKey(KEYSTORE))
-            keystore = options.get(KEYSTORE);
-        if (options.containsKey(KEYSTORE_PASSWORD))
-            keystorePassword = options.get(KEYSTORE_PASSWORD);
-        if (options.containsKey(PROTOCOL))
-            protocol = options.get(PROTOCOL);
-        if (options.containsKey(CIPHER_SUITES))
-            cipherSuites = options.get(CIPHER_SUITES).split(",");
+        truststore = options.get(TRUSTSTORE);
+        truststorePassword = options.get(TRUSTSTORE_PASSWORD);
+        keystore = options.get(KEYSTORE);
+        keystorePassword = options.get(KEYSTORE_PASSWORD);
+        protocol = options.get(PROTOCOL);
+        cipherSuites = options.get(CIPHER_SUITES).split(",");
     }
 
     @Override

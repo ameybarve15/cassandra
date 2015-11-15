@@ -1,55 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.thrift;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.net.ssl.SSLServerSocket;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.concurrent.NamedThreadFactory;
-import org.apache.cassandra.config.DatabaseDescriptor;
-import org.apache.cassandra.config.EncryptionOptions.ClientEncryptionOptions;
-import org.apache.cassandra.utils.JVMStabilityInspector;
-import org.apache.cassandra.security.SSLFactory;
-import org.apache.thrift.TException;
-import org.apache.thrift.TProcessor;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TThreadPoolServer;
-import org.apache.thrift.transport.TSSLTransportFactory;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
-import org.apache.thrift.transport.TSSLTransportFactory.TSSLTransportParameters;
-
-import com.google.common.util.concurrent.Uninterruptibles;
 
 
 /**
@@ -208,29 +157,12 @@ public class CustomTThreadPoolServer extends TServer
                     outputProtocol = outputProtocolFactory_.getProtocol(outputTransport);
                 }
             }
-            catch (TTransportException ttx)
-            {
-                // Assume the client died and continue silently
-                // Log at debug to allow debugging of "frame too large" errors (see CASSANDRA-3142).
-                logger.debug("Thrift transport error occurred during processing of message.", ttx);
-            }
-            catch (TException tx)
-            {
-                logger.error("Thrift error occurred during processing of message.", tx);
-            }
-            catch (Exception e)
-            {
-                JVMStabilityInspector.inspectThrowable(e);
-                logger.error("Error occurred during processing of message.", e);
-            }
             finally
             {
-                if (socket != null)
-                    ThriftSessionManager.instance.connectionComplete(socket);
-                if (inputTransport != null)
-                    inputTransport.close();
-                if (outputTransport != null)
-                    outputTransport.close();
+                ThriftSessionManager.instance.connectionComplete(socket);
+
+                inputTransport.close();
+                outputTransport.close();
                 activeClients.decrementAndGet();
             }
         }
@@ -265,10 +197,7 @@ public class CustomTThreadPoolServer extends TServer
                     serverTransport = new TCustomServerSocket(addr, args.keepAlive, args.sendBufferSize, args.recvBufferSize, args.listenBacklog);
                 }
             }
-            catch (TTransportException e)
-            {
-                throw new RuntimeException(String.format("Unable to create thrift socket to %s:%s", addr.getAddress(), addr.getPort()), e);
-            }
+ 
             // ThreadPool Server and will be invocation per connection basis...
             TThreadPoolServer.Args serverArgs = new TThreadPoolServer.Args(serverTransport)
                                                                      .minWorkerThreads(DatabaseDescriptor.getRpcMinThreads())

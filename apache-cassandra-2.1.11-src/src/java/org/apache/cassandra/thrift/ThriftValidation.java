@@ -1,47 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.thrift;
-
-import java.nio.ByteBuffer;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.config.*;
-import org.apache.cassandra.cql3.ColumnIdentifier;
-import org.apache.cassandra.db.*;
-import org.apache.cassandra.db.composites.*;
-import org.apache.cassandra.db.filter.IDiskAtomFilter;
-import org.apache.cassandra.db.filter.NamesQueryFilter;
-import org.apache.cassandra.db.filter.SliceQueryFilter;
-import org.apache.cassandra.db.index.SecondaryIndex;
-import org.apache.cassandra.db.index.SecondaryIndexManager;
-import org.apache.cassandra.db.marshal.AbstractType;
-import org.apache.cassandra.db.marshal.ColumnToCollectionType;
-import org.apache.cassandra.db.marshal.UTF8Type;
-import org.apache.cassandra.dht.IPartitioner;
-import org.apache.cassandra.dht.Token;
-import org.apache.cassandra.serializers.MarshalException;
-import org.apache.cassandra.service.StorageService;
-import org.apache.cassandra.utils.ByteBufferUtil;
-import org.apache.cassandra.utils.FBUtilities;
-
 /**
  * This has a lot of building blocks for CassandraServer to call to make sure it has valid input
  * -- ensuring column names conform to the declared comparator, for instance.
@@ -54,29 +10,11 @@ public class ThriftValidation
 {
     private static final Logger logger = LoggerFactory.getLogger(ThriftValidation.class);
 
-    public static void validateKey(CFMetaData metadata, ByteBuffer key) throws org.apache.cassandra.exceptions.InvalidRequestException
+    public static void validateKey(CFMetaData metadata, ByteBuffer key) 
     {
-        if (key == null || key.remaining() == 0)
-        {
-            throw new org.apache.cassandra.exceptions.InvalidRequestException("Key may not be empty");
-        }
+        @check@ key is in the range.
 
-        // check that key can be handled by FBUtilities.writeShortByteArray
-        if (key.remaining() > FBUtilities.MAX_UNSIGNED_SHORT)
-        {
-            throw new org.apache.cassandra.exceptions.InvalidRequestException("Key length of " + key.remaining() +
-                                                                              " is longer than maximum of " +
-                                                                              FBUtilities.MAX_UNSIGNED_SHORT);
-        }
-
-        try
-        {
-            metadata.getKeyValidator().validate(key);
-        }
-        catch (MarshalException e)
-        {
-            throw new org.apache.cassandra.exceptions.InvalidRequestException(e.getMessage());
-        }
+        metadata.getKeyValidator().validate(key);
     }
 
     public static void validateKeyspace(String keyspaceName) throws KeyspaceNotDefinedException
@@ -87,34 +25,25 @@ public class ThriftValidation
         }
     }
 
-    public static CFMetaData validateColumnFamily(String keyspaceName, String cfName, boolean isCommutativeOp) throws org.apache.cassandra.exceptions.InvalidRequestException
+    public static CFMetaData validateColumnFamily(String keyspaceName, String cfName, boolean isCommutativeOp) 
     {
         CFMetaData metadata = validateColumnFamily(keyspaceName, cfName);
 
         if (isCommutativeOp)
-        {
-            if (!metadata.isCounter())
-                throw new org.apache.cassandra.exceptions.InvalidRequestException("invalid operation for non commutative columnfamily " + cfName);
-        }
-        else
-        {
-            if (metadata.isCounter())
-                throw new org.apache.cassandra.exceptions.InvalidRequestException("invalid operation for commutative columnfamily " + cfName);
-        }
+            @check@ metadata.isCount();
+        else 
+            @check@ !metadata.isCount();
+
         return metadata;
     }
 
     // To be used when the operation should be authorized whether this is a counter CF or not
-    public static CFMetaData validateColumnFamily(String keyspaceName, String cfName) throws org.apache.cassandra.exceptions.InvalidRequestException
+    public static CFMetaData validateColumnFamily(String keyspaceName, String cfName) 
     {
         validateKeyspace(keyspaceName);
-        if (cfName.isEmpty())
-            throw new org.apache.cassandra.exceptions.InvalidRequestException("non-empty columnfamily is required");
-
+   
         CFMetaData metadata = Schema.instance.getCFMetaData(keyspaceName, cfName);
-        if (metadata == null)
-            throw new org.apache.cassandra.exceptions.InvalidRequestException("unconfigured columnfamily " + cfName);
-
+    
         return metadata;
     }
 
@@ -125,20 +54,14 @@ public class ThriftValidation
     {
         if (metadata.cfType == ColumnFamilyType.Standard)
         {
-            if (column_path.super_column != null)
-            {
-                throw new org.apache.cassandra.exceptions.InvalidRequestException("supercolumn parameter is invalid for standard CF " + metadata.cfName);
-            }
-            if (column_path.column == null)
-            {
-                throw new org.apache.cassandra.exceptions.InvalidRequestException("column parameter is not optional for standard CF " + metadata.cfName);
-            }
+            @check@ (column_path.super_column == null);
+            @check@ (column_path.column != null)
         }
         else
         {
-            if (column_path.super_column == null)
-                throw new org.apache.cassandra.exceptions.InvalidRequestException("supercolumn parameter is not optional for super CF " + metadata.cfName);
+            @check@ (column_path.super_column != null);
         }
+        
         if (column_path.column != null)
         {
             validateColumnNames(metadata, column_path.super_column, Arrays.asList(column_path.column));
