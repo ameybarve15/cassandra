@@ -10,10 +10,6 @@ public class Commit
 
     public Commit(ByteBuffer key, UUID ballot, ColumnFamily update)
     {
-        assert key != null;
-        assert ballot != null;
-        assert update != null;
-
         this.key = key;
         this.ballot = ballot;
         this.update = update;

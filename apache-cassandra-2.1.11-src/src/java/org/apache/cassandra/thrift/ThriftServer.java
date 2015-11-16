@@ -87,6 +87,7 @@ public class ThriftServer implements CassandraDaemon.Server
             args.recvBufferSize = DatabaseDescriptor.getRpcRecvBufferSize();
             args.inTransportFactory = transportFactory;
             args.outTransportFactory = transportFactory;
+            
             serverEngine = new TServerCustomFactory(DatabaseDescriptor.getRpcServerType()).buildTServer(args);
         }
 

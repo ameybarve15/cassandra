@@ -15,9 +15,6 @@ public class PaxosState
 
     public PaxosState(Commit promised, Commit accepted, Commit mostRecentCommit)
     {
-        assert promised.key == accepted.key && accepted.key == mostRecentCommit.key;
-        assert promised.update.metadata() == accepted.update.metadata() && accepted.update.metadata() == mostRecentCommit.update.metadata();
-
         this.promised = promised;
         this.accepted = accepted;
         this.mostRecentCommit = mostRecentCommit;
@@ -35,7 +32,6 @@ public class PaxosState
                 PaxosState state = SystemKeyspace.loadPaxosState(toPrepare.key, toPrepare.update.metadata());
                 if (toPrepare.isAfter(state.promised))
                 {
-                    Tracing.trace("Promising ballot {}", toPrepare.ballot);
                     SystemKeyspace.savePaxosPromise(toPrepare);
                     return new PrepareResponse(true, state.accepted, state.mostRecentCommit);
                 }
@@ -105,7 +101,6 @@ public class PaxosState
             // don't want to perform the mutation and potentially resurrect truncated data
             if (UUIDGen.unixTimestamp(proposal.ballot) >= SystemKeyspace.getTruncatedAt(proposal.update.metadata().cfId))
             {
-                Tracing.trace("Committing proposal {}", proposal);
                 Mutation mutation = proposal.makeMutation();
                 Keyspace.open(mutation.getKeyspaceName()).apply(mutation, true);
             }

@@ -1,5 +1,3 @@
-
-
 /**
  * Encapsulates the current client state (session).
  *
