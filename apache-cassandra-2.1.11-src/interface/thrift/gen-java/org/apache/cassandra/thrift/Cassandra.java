@@ -36,7 +36,7 @@ import org.apache.thrift.scheme.TupleScheme;
 import org.apache.thrift.protocol.TTupleProtocol;
 import org.apache.thrift.protocol.TProtocolException;
 import org.apache.thrift.EncodingUtils;
-import org.apache.thrift.TException;
+import TException;
 import org.apache.thrift.async.AsyncMethodCallback;
 import org.apache.thrift.server.AbstractNonblockingServer.*;
 import java.util.List;
@@ -58,112 +58,119 @@ public class Cassandra {
 
   public interface Iface {
 
-    public void login(AuthenticationRequest auth_request) throws AuthenticationException, AuthorizationException, org.apache.thrift.TException;
+    public void login(AuthenticationRequest auth_request) 
+        throws AuthenticationException, AuthorizationException, TException;
 
-    public void set_keyspace(String keyspace) throws InvalidRequestException, org.apache.thrift.TException;
+    public void set_keyspace(String keyspace) 
+        throws InvalidRequestException, TException;
 
     /**
      * Get the Column or SuperColumn at the given column_path. If no value is present, NotFoundException is thrown. (This is
      * the only method that can throw an exception under non-failure conditions.)
      * 
-     * @param key
-     * @param column_path
-     * @param consistency_level
      */
-    public ColumnOrSuperColumn get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level) throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public ColumnOrSuperColumn get (
+            ByteBuffer key, 
+            ColumnPath column_path, 
+            ConsistencyLevel consistency_level
+        ) 
+        throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, TException;
 
     /**
      * Get the group of columns contained by column_parent (either a ColumnFamily name or a ColumnFamily/SuperColumn name
      * pair) specified by the given SlicePredicate. If no matching values are found, an empty list is returned.
-     * 
-     * @param key
-     * @param column_parent
-     * @param predicate
-     * @param consistency_level
      */
-    public List<ColumnOrSuperColumn> get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public List<ColumnOrSuperColumn> get_slice (
+            ByteBuffer key, 
+            ColumnParent column_parent, 
+            SlicePredicate predicate, 
+            ConsistencyLevel consistency_level) 
+        throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * returns the number of columns matching <code>predicate</code> for a particular <code>key</code>,
      * <code>ColumnFamily</code> and optionally <code>SuperColumn</code>.
      * 
-     * @param key
-     * @param column_parent
-     * @param predicate
-     * @param consistency_level
      */
-    public int get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public int get_count(
+            ByteBuffer key, 
+            ColumnParent column_parent, 
+            SlicePredicate predicate, 
+            ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Performs a get_slice for column_parent and predicate for the given keys in parallel.
      * 
-     * @param keys
-     * @param column_parent
-     * @param predicate
-     * @param consistency_level
      */
-    public Map<ByteBuffer,List<ColumnOrSuperColumn>> multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public Map<ByteBuffer,List<ColumnOrSuperColumn>> multiget_slice(
+            List<ByteBuffer> keys, 
+            ColumnParent column_parent, 
+            SlicePredicate predicate, 
+            ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Perform a get_count in parallel on the given list<binary> keys. The return value maps keys to the count found.
-     * 
-     * @param keys
-     * @param column_parent
-     * @param predicate
-     * @param consistency_level
      */
-    public Map<ByteBuffer,Integer> multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public Map<ByteBuffer,Integer> multiget_count(
+        List<ByteBuffer> keys, 
+        ColumnParent column_parent, 
+        SlicePredicate predicate, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * returns a subset of columns for a contiguous range of keys.
-     * 
-     * @param column_parent
-     * @param predicate
-     * @param range
-     * @param consistency_level
      */
-    public List<KeySlice> get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public List<KeySlice> get_range_slices(
+        ColumnParent column_parent, 
+        SlicePredicate predicate, 
+        KeyRange range, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * returns a range of columns, wrapping to the next rows if necessary to collect max_results.
-     * 
-     * @param column_family
-     * @param range
-     * @param start_column
-     * @param consistency_level
      */
-    public List<KeySlice> get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public List<KeySlice> get_paged_slice(
+        String column_family, 
+        KeyRange range, 
+        ByteBuffer start_column, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Returns the subset of columns specified in SlicePredicate for the rows matching the IndexClause
      * @deprecated use get_range_slices instead with range.row_filter specified
-     * 
-     * @param column_parent
-     * @param index_clause
-     * @param column_predicate
-     * @param consistency_level
      */
-    public List<KeySlice> get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public List<KeySlice> get_indexed_slices(
+        ColumnParent column_parent, 
+        IndexClause index_clause, 
+        SlicePredicate column_predicate, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Insert a Column at the given column_parent.column_family and optional column_parent.super_column.
      * 
-     * @param key
-     * @param column_parent
-     * @param column
-     * @param consistency_level
      */
-    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void insert(
+        ByteBuffer key, 
+        ColumnParent column_parent, 
+        Column column, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Increment or decrement a counter.
-     * 
-     * @param key
-     * @param column_parent
-     * @param column
-     * @param consistency_level
      */
-    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void add(
+        ByteBuffer key, 
+        ColumnParent column_parent, 
+        CounterColumn column, 
+        ConsistencyLevel consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Atomic compare and set.
@@ -180,15 +187,15 @@ public class Cassandra {
      * guaranteed that a followup QUORUM read will see the cas write (if that one was successful obviously). If
      * commit_consistency_level is ANY, you will need to use a SERIAL/LOCAL_SERIAL read to be guaranteed to see
      * the write.
-     * 
-     * @param key
-     * @param column_family
-     * @param expected
-     * @param updates
-     * @param serial_consistency_level
-     * @param commit_consistency_level
      */
-    public CASResult cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public CASResult cas(
+        ByteBuffer key, 
+        String column_family, 
+        List<Column> expected, 
+        List<Column> updates, 
+        ConsistencyLevel serial_consistency_level, 
+        ConsistencyLevel commit_consistency_level) 
+    throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Remove data from the row specified by key at the granularity specified by column_path, and the given timestamp. Note
@@ -200,7 +207,7 @@ public class Cassandra {
      * @param timestamp
      * @param consistency_level
      */
-    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Remove a counter at the specified location.
@@ -211,7 +218,7 @@ public class Cassandra {
      * @param path
      * @param consistency_level
      */
-    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      *   Mutate many columns or super columns for many row keys. See also: Mutation.
@@ -222,7 +229,7 @@ public class Cassandra {
      * @param mutation_map
      * @param consistency_level
      */
-    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      *   Atomically mutate many columns or super columns for many row keys. See also: Mutation.
@@ -233,7 +240,7 @@ public class Cassandra {
      * @param mutation_map
      * @param consistency_level
      */
-    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Truncate will mark and entire column family as deleted.
@@ -245,36 +252,36 @@ public class Cassandra {
      * 
      * @param cfname
      */
-    public void truncate(String cfname) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public void truncate(String cfname) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * Select multiple slices of a key in a single RPC operation
      * 
      * @param request
      */
-    public List<ColumnOrSuperColumn> get_multi_slice(MultiSliceRequest request) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException;
+    public List<ColumnOrSuperColumn> get_multi_slice(MultiSliceRequest request) throws InvalidRequestException, UnavailableException, TimedOutException, TException;
 
     /**
      * for each schema version present in the cluster, returns a list of nodes at that version.
      * hosts that do not respond will be under the key DatabaseDescriptor.INITIAL_VERSION.
      * the cluster is all on the same version if the size of the map is 1.
      */
-    public Map<String,List<String>> describe_schema_versions() throws InvalidRequestException, org.apache.thrift.TException;
+    public Map<String,List<String>> describe_schema_versions() throws InvalidRequestException, TException;
 
     /**
      * list the defined keyspaces in this cluster
      */
-    public List<KsDef> describe_keyspaces() throws InvalidRequestException, org.apache.thrift.TException;
+    public List<KsDef> describe_keyspaces() throws InvalidRequestException, TException;
 
     /**
      * get the cluster name
      */
-    public String describe_cluster_name() throws org.apache.thrift.TException;
+    public String describe_cluster_name() throws TException;
 
     /**
      * get the thrift api version
      */
-    public String describe_version() throws org.apache.thrift.TException;
+    public String describe_version() throws TException;
 
     /**
      * get the token ring: a map of ranges to host addresses,
@@ -288,38 +295,38 @@ public class Cassandra {
      * 
      * @param keyspace
      */
-    public List<TokenRange> describe_ring(String keyspace) throws InvalidRequestException, org.apache.thrift.TException;
+    public List<TokenRange> describe_ring(String keyspace) throws InvalidRequestException, TException;
 
     /**
      * same as describe_ring, but considers only nodes in the local DC
      * 
      * @param keyspace
      */
-    public List<TokenRange> describe_local_ring(String keyspace) throws InvalidRequestException, org.apache.thrift.TException;
+    public List<TokenRange> describe_local_ring(String keyspace) throws InvalidRequestException, TException;
 
     /**
      * get the mapping between token->node ip
      * without taking replication into consideration
      * https://issues.apache.org/jira/browse/CASSANDRA-4092
      */
-    public Map<String,String> describe_token_map() throws InvalidRequestException, org.apache.thrift.TException;
+    public Map<String,String> describe_token_map() throws InvalidRequestException, TException;
 
     /**
      * returns the partitioner used by this cluster
      */
-    public String describe_partitioner() throws org.apache.thrift.TException;
+    public String describe_partitioner() throws TException;
 
     /**
      * returns the snitch used by this cluster
      */
-    public String describe_snitch() throws org.apache.thrift.TException;
+    public String describe_snitch() throws TException;
 
     /**
      * describe specified keyspace
      * 
      * @param keyspace
      */
-    public KsDef describe_keyspace(String keyspace) throws NotFoundException, InvalidRequestException, org.apache.thrift.TException;
+    public KsDef describe_keyspace(String keyspace) throws NotFoundException, InvalidRequestException, TException;
 
     /**
      * experimental API for hadoop/parallel query support.
@@ -333,57 +340,57 @@ public class Cassandra {
      * @param end_token
      * @param keys_per_split
      */
-    public List<String> describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, org.apache.thrift.TException;
+    public List<String> describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, TException;
 
     /**
      * Enables tracing for the next query in this connection and returns the UUID for that trace session
      * The next query will be traced idependently of trace probability and the returned UUID can be used to query the trace keyspace
      */
-    public ByteBuffer trace_next_query() throws org.apache.thrift.TException;
+    public ByteBuffer trace_next_query() throws TException;
 
-    public List<CfSplit> describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, org.apache.thrift.TException;
+    public List<CfSplit> describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, TException;
 
     /**
      * adds a column family. returns the new schema id.
      * 
      * @param cf_def
      */
-    public String system_add_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_add_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * drops a column family. returns the new schema id.
      * 
      * @param column_family
      */
-    public String system_drop_column_family(String column_family) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_drop_column_family(String column_family) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * adds a keyspace and any column families that are part of it. returns the new schema id.
      * 
      * @param ks_def
      */
-    public String system_add_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_add_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * drops a keyspace and any column families that are part of it. returns the new schema id.
      * 
      * @param keyspace
      */
-    public String system_drop_keyspace(String keyspace) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_drop_keyspace(String keyspace) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * updates properties of a keyspace. returns the new schema id.
      * 
      * @param ks_def
      */
-    public String system_update_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_update_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * updates properties of a column family. returns the new schema id.
      * 
      * @param cf_def
      */
-    public String system_update_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException;
+    public String system_update_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, TException;
 
     /**
      * @deprecated Will become a no-op in 2.2. Please use the CQL3 version instead.
@@ -391,7 +398,7 @@ public class Cassandra {
      * @param query
      * @param compression
      */
-    public CqlResult execute_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException;
+    public CqlResult execute_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException;
 
     /**
      * Executes a CQL3 (Cassandra Query Language) statement and returns a
@@ -401,7 +408,7 @@ public class Cassandra {
      * @param compression
      * @param consistency
      */
-    public CqlResult execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException;
+    public CqlResult execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException;
 
     /**
      * @deprecated Will become a no-op in 2.2. Please use the CQL3 version instead.
@@ -409,7 +416,7 @@ public class Cassandra {
      * @param query
      * @param compression
      */
-    public CqlPreparedResult prepare_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, org.apache.thrift.TException;
+    public CqlPreparedResult prepare_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, TException;
 
     /**
      * Prepare a CQL3 (Cassandra Query Language) statement by compiling and returning
@@ -420,7 +427,7 @@ public class Cassandra {
      * @param query
      * @param compression
      */
-    public CqlPreparedResult prepare_cql3_query(ByteBuffer query, Compression compression) throws InvalidRequestException, org.apache.thrift.TException;
+    public CqlPreparedResult prepare_cql3_query(ByteBuffer query, Compression compression) throws InvalidRequestException, TException;
 
     /**
      * @deprecated Will become a no-op in 2.2. Please use the CQL3 version instead.
@@ -428,7 +435,7 @@ public class Cassandra {
      * @param itemId
      * @param values
      */
-    public CqlResult execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException;
+    public CqlResult execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException;
 
     /**
      * Executes a prepared CQL3 (Cassandra Query Language) statement by passing an id token, a list of variables
@@ -438,108 +445,108 @@ public class Cassandra {
      * @param values
      * @param consistency
      */
-    public CqlResult execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException;
+    public CqlResult execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException;
 
     /**
      * @deprecated This is now a no-op. Please use the CQL3 specific methods instead.
      * 
      * @param version
      */
-    public void set_cql_version(String version) throws InvalidRequestException, org.apache.thrift.TException;
+    public void set_cql_version(String version) throws InvalidRequestException, TException;
 
   }
 
   public interface AsyncIface {
 
-    public void login(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void login(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void set_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void set_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void truncate(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void truncate(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void get_multi_slice(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void get_multi_slice(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_schema_versions(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_schema_versions(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_keyspaces(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_keyspaces(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_cluster_name(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_cluster_name(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_version(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_version(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_local_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_local_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_token_map(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_token_map(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_partitioner(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_partitioner(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_snitch(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_snitch(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_splits(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_splits(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void trace_next_query(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void trace_next_query(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_add_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_add_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_drop_column_family(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_drop_column_family(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_add_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_add_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_drop_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_drop_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_update_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_update_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void system_update_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void system_update_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void execute_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void execute_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void prepare_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void prepare_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void prepare_cql3_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void prepare_cql3_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void execute_prepared_cql_query(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void execute_prepared_cql_query(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
-    public void set_cql_version(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void set_cql_version(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException;
 
   }
 
@@ -563,20 +570,20 @@ public class Cassandra {
       super(iprot, oprot);
     }
 
-    public void login(AuthenticationRequest auth_request) throws AuthenticationException, AuthorizationException, org.apache.thrift.TException
+    public void login(AuthenticationRequest auth_request) throws AuthenticationException, AuthorizationException, TException
     {
       send_login(auth_request);
       recv_login();
     }
 
-    public void send_login(AuthenticationRequest auth_request) throws org.apache.thrift.TException
+    public void send_login(AuthenticationRequest auth_request) throws TException
     {
       login_args args = new login_args();
       args.setAuth_request(auth_request);
       sendBase("login", args);
     }
 
-    public void recv_login() throws AuthenticationException, AuthorizationException, org.apache.thrift.TException
+    public void recv_login() throws AuthenticationException, AuthorizationException, TException
     {
       login_result result = new login_result();
       receiveBase(result, "login");
@@ -589,20 +596,20 @@ public class Cassandra {
       return;
     }
 
-    public void set_keyspace(String keyspace) throws InvalidRequestException, org.apache.thrift.TException
+    public void set_keyspace(String keyspace) throws InvalidRequestException, TException
     {
       send_set_keyspace(keyspace);
       recv_set_keyspace();
     }
 
-    public void send_set_keyspace(String keyspace) throws org.apache.thrift.TException
+    public void send_set_keyspace(String keyspace) throws TException
     {
       set_keyspace_args args = new set_keyspace_args();
       args.setKeyspace(keyspace);
       sendBase("set_keyspace", args);
     }
 
-    public void recv_set_keyspace() throws InvalidRequestException, org.apache.thrift.TException
+    public void recv_set_keyspace() throws InvalidRequestException, TException
     {
       set_keyspace_result result = new set_keyspace_result();
       receiveBase(result, "set_keyspace");
@@ -612,13 +619,13 @@ public class Cassandra {
       return;
     }
 
-    public ColumnOrSuperColumn get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level) throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public ColumnOrSuperColumn get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level) throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, TException
     {
       send_get(key, column_path, consistency_level);
       return recv_get();
     }
 
-    public void send_get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level) throws TException
     {
       get_args args = new get_args();
       args.setKey(key);
@@ -627,7 +634,7 @@ public class Cassandra {
       sendBase("get", args);
     }
 
-    public ColumnOrSuperColumn recv_get() throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public ColumnOrSuperColumn recv_get() throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, TException
     {
       get_result result = new get_result();
       receiveBase(result, "get");
@@ -649,13 +656,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get failed: unknown result");
     }
 
-    public List<ColumnOrSuperColumn> get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<ColumnOrSuperColumn> get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_slice(key, column_parent, predicate, consistency_level);
       return recv_get_slice();
     }
 
-    public void send_get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws TException
     {
       get_slice_args args = new get_slice_args();
       args.setKey(key);
@@ -665,7 +672,7 @@ public class Cassandra {
       sendBase("get_slice", args);
     }
 
-    public List<ColumnOrSuperColumn> recv_get_slice() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<ColumnOrSuperColumn> recv_get_slice() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_slice_result result = new get_slice_result();
       receiveBase(result, "get_slice");
@@ -684,13 +691,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_slice failed: unknown result");
     }
 
-    public int get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public int get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_count(key, column_parent, predicate, consistency_level);
       return recv_get_count();
     }
 
-    public void send_get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws TException
     {
       get_count_args args = new get_count_args();
       args.setKey(key);
@@ -700,7 +707,7 @@ public class Cassandra {
       sendBase("get_count", args);
     }
 
-    public int recv_get_count() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public int recv_get_count() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_count_result result = new get_count_result();
       receiveBase(result, "get_count");
@@ -719,13 +726,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_count failed: unknown result");
     }
 
-    public Map<ByteBuffer,List<ColumnOrSuperColumn>> multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public Map<ByteBuffer,List<ColumnOrSuperColumn>> multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_multiget_slice(keys, column_parent, predicate, consistency_level);
       return recv_multiget_slice();
     }
 
-    public void send_multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws TException
     {
       multiget_slice_args args = new multiget_slice_args();
       args.setKeys(keys);
@@ -735,7 +742,7 @@ public class Cassandra {
       sendBase("multiget_slice", args);
     }
 
-    public Map<ByteBuffer,List<ColumnOrSuperColumn>> recv_multiget_slice() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public Map<ByteBuffer,List<ColumnOrSuperColumn>> recv_multiget_slice() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       multiget_slice_result result = new multiget_slice_result();
       receiveBase(result, "multiget_slice");
@@ -754,13 +761,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "multiget_slice failed: unknown result");
     }
 
-    public Map<ByteBuffer,Integer> multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public Map<ByteBuffer,Integer> multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_multiget_count(keys, column_parent, predicate, consistency_level);
       return recv_multiget_count();
     }
 
-    public void send_multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level) throws TException
     {
       multiget_count_args args = new multiget_count_args();
       args.setKeys(keys);
@@ -770,7 +777,7 @@ public class Cassandra {
       sendBase("multiget_count", args);
     }
 
-    public Map<ByteBuffer,Integer> recv_multiget_count() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public Map<ByteBuffer,Integer> recv_multiget_count() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       multiget_count_result result = new multiget_count_result();
       receiveBase(result, "multiget_count");
@@ -789,13 +796,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "multiget_count failed: unknown result");
     }
 
-    public List<KeySlice> get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_range_slices(column_parent, predicate, range, consistency_level);
       return recv_get_range_slices();
     }
 
-    public void send_get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level) throws TException
     {
       get_range_slices_args args = new get_range_slices_args();
       args.setColumn_parent(column_parent);
@@ -805,7 +812,7 @@ public class Cassandra {
       sendBase("get_range_slices", args);
     }
 
-    public List<KeySlice> recv_get_range_slices() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> recv_get_range_slices() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_range_slices_result result = new get_range_slices_result();
       receiveBase(result, "get_range_slices");
@@ -824,13 +831,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_range_slices failed: unknown result");
     }
 
-    public List<KeySlice> get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_paged_slice(column_family, range, start_column, consistency_level);
       return recv_get_paged_slice();
     }
 
-    public void send_get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level) throws TException
     {
       get_paged_slice_args args = new get_paged_slice_args();
       args.setColumn_family(column_family);
@@ -840,7 +847,7 @@ public class Cassandra {
       sendBase("get_paged_slice", args);
     }
 
-    public List<KeySlice> recv_get_paged_slice() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> recv_get_paged_slice() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_paged_slice_result result = new get_paged_slice_result();
       receiveBase(result, "get_paged_slice");
@@ -859,13 +866,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_paged_slice failed: unknown result");
     }
 
-    public List<KeySlice> get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_indexed_slices(column_parent, index_clause, column_predicate, consistency_level);
       return recv_get_indexed_slices();
     }
 
-    public void send_get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level) throws TException
     {
       get_indexed_slices_args args = new get_indexed_slices_args();
       args.setColumn_parent(column_parent);
@@ -875,7 +882,7 @@ public class Cassandra {
       sendBase("get_indexed_slices", args);
     }
 
-    public List<KeySlice> recv_get_indexed_slices() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<KeySlice> recv_get_indexed_slices() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_indexed_slices_result result = new get_indexed_slices_result();
       receiveBase(result, "get_indexed_slices");
@@ -894,13 +901,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_indexed_slices failed: unknown result");
     }
 
-    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_insert(key, column_parent, column, consistency_level);
       recv_insert();
     }
 
-    public void send_insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level) throws TException
     {
       insert_args args = new insert_args();
       args.setKey(key);
@@ -910,7 +917,7 @@ public class Cassandra {
       sendBase("insert", args);
     }
 
-    public void recv_insert() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_insert() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       insert_result result = new insert_result();
       receiveBase(result, "insert");
@@ -926,13 +933,13 @@ public class Cassandra {
       return;
     }
 
-    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_add(key, column_parent, column, consistency_level);
       recv_add();
     }
 
-    public void send_add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level) throws TException
     {
       add_args args = new add_args();
       args.setKey(key);
@@ -942,7 +949,7 @@ public class Cassandra {
       sendBase("add", args);
     }
 
-    public void recv_add() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_add() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       add_result result = new add_result();
       receiveBase(result, "add");
@@ -958,13 +965,13 @@ public class Cassandra {
       return;
     }
 
-    public CASResult cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public CASResult cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_cas(key, column_family, expected, updates, serial_consistency_level, commit_consistency_level);
       return recv_cas();
     }
 
-    public void send_cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level) throws org.apache.thrift.TException
+    public void send_cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level) throws TException
     {
       cas_args args = new cas_args();
       args.setKey(key);
@@ -976,7 +983,7 @@ public class Cassandra {
       sendBase("cas", args);
     }
 
-    public CASResult recv_cas() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public CASResult recv_cas() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       cas_result result = new cas_result();
       receiveBase(result, "cas");
@@ -995,13 +1002,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "cas failed: unknown result");
     }
 
-    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_remove(key, column_path, timestamp, consistency_level);
       recv_remove();
     }
 
-    public void send_remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level) throws TException
     {
       remove_args args = new remove_args();
       args.setKey(key);
@@ -1011,7 +1018,7 @@ public class Cassandra {
       sendBase("remove", args);
     }
 
-    public void recv_remove() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_remove() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       remove_result result = new remove_result();
       receiveBase(result, "remove");
@@ -1027,13 +1034,13 @@ public class Cassandra {
       return;
     }
 
-    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_remove_counter(key, path, consistency_level);
       recv_remove_counter();
     }
 
-    public void send_remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level) throws TException
     {
       remove_counter_args args = new remove_counter_args();
       args.setKey(key);
@@ -1042,7 +1049,7 @@ public class Cassandra {
       sendBase("remove_counter", args);
     }
 
-    public void recv_remove_counter() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_remove_counter() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       remove_counter_result result = new remove_counter_result();
       receiveBase(result, "remove_counter");
@@ -1058,13 +1065,13 @@ public class Cassandra {
       return;
     }
 
-    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_batch_mutate(mutation_map, consistency_level);
       recv_batch_mutate();
     }
 
-    public void send_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws TException
     {
       batch_mutate_args args = new batch_mutate_args();
       args.setMutation_map(mutation_map);
@@ -1072,7 +1079,7 @@ public class Cassandra {
       sendBase("batch_mutate", args);
     }
 
-    public void recv_batch_mutate() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_batch_mutate() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       batch_mutate_result result = new batch_mutate_result();
       receiveBase(result, "batch_mutate");
@@ -1088,13 +1095,13 @@ public class Cassandra {
       return;
     }
 
-    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_atomic_batch_mutate(mutation_map, consistency_level);
       recv_atomic_batch_mutate();
     }
 
-    public void send_atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws org.apache.thrift.TException
+    public void send_atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level) throws TException
     {
       atomic_batch_mutate_args args = new atomic_batch_mutate_args();
       args.setMutation_map(mutation_map);
@@ -1102,7 +1109,7 @@ public class Cassandra {
       sendBase("atomic_batch_mutate", args);
     }
 
-    public void recv_atomic_batch_mutate() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_atomic_batch_mutate() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       atomic_batch_mutate_result result = new atomic_batch_mutate_result();
       receiveBase(result, "atomic_batch_mutate");
@@ -1118,20 +1125,20 @@ public class Cassandra {
       return;
     }
 
-    public void truncate(String cfname) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void truncate(String cfname) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_truncate(cfname);
       recv_truncate();
     }
 
-    public void send_truncate(String cfname) throws org.apache.thrift.TException
+    public void send_truncate(String cfname) throws TException
     {
       truncate_args args = new truncate_args();
       args.setCfname(cfname);
       sendBase("truncate", args);
     }
 
-    public void recv_truncate() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public void recv_truncate() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       truncate_result result = new truncate_result();
       receiveBase(result, "truncate");
@@ -1147,20 +1154,20 @@ public class Cassandra {
       return;
     }
 
-    public List<ColumnOrSuperColumn> get_multi_slice(MultiSliceRequest request) throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<ColumnOrSuperColumn> get_multi_slice(MultiSliceRequest request) throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       send_get_multi_slice(request);
       return recv_get_multi_slice();
     }
 
-    public void send_get_multi_slice(MultiSliceRequest request) throws org.apache.thrift.TException
+    public void send_get_multi_slice(MultiSliceRequest request) throws TException
     {
       get_multi_slice_args args = new get_multi_slice_args();
       args.setRequest(request);
       sendBase("get_multi_slice", args);
     }
 
-    public List<ColumnOrSuperColumn> recv_get_multi_slice() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException
+    public List<ColumnOrSuperColumn> recv_get_multi_slice() throws InvalidRequestException, UnavailableException, TimedOutException, TException
     {
       get_multi_slice_result result = new get_multi_slice_result();
       receiveBase(result, "get_multi_slice");
@@ -1179,19 +1186,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "get_multi_slice failed: unknown result");
     }
 
-    public Map<String,List<String>> describe_schema_versions() throws InvalidRequestException, org.apache.thrift.TException
+    public Map<String,List<String>> describe_schema_versions() throws InvalidRequestException, TException
     {
       send_describe_schema_versions();
       return recv_describe_schema_versions();
     }
 
-    public void send_describe_schema_versions() throws org.apache.thrift.TException
+    public void send_describe_schema_versions() throws TException
     {
       describe_schema_versions_args args = new describe_schema_versions_args();
       sendBase("describe_schema_versions", args);
     }
 
-    public Map<String,List<String>> recv_describe_schema_versions() throws InvalidRequestException, org.apache.thrift.TException
+    public Map<String,List<String>> recv_describe_schema_versions() throws InvalidRequestException, TException
     {
       describe_schema_versions_result result = new describe_schema_versions_result();
       receiveBase(result, "describe_schema_versions");
@@ -1204,19 +1211,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_schema_versions failed: unknown result");
     }
 
-    public List<KsDef> describe_keyspaces() throws InvalidRequestException, org.apache.thrift.TException
+    public List<KsDef> describe_keyspaces() throws InvalidRequestException, TException
     {
       send_describe_keyspaces();
       return recv_describe_keyspaces();
     }
 
-    public void send_describe_keyspaces() throws org.apache.thrift.TException
+    public void send_describe_keyspaces() throws TException
     {
       describe_keyspaces_args args = new describe_keyspaces_args();
       sendBase("describe_keyspaces", args);
     }
 
-    public List<KsDef> recv_describe_keyspaces() throws InvalidRequestException, org.apache.thrift.TException
+    public List<KsDef> recv_describe_keyspaces() throws InvalidRequestException, TException
     {
       describe_keyspaces_result result = new describe_keyspaces_result();
       receiveBase(result, "describe_keyspaces");
@@ -1229,19 +1236,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_keyspaces failed: unknown result");
     }
 
-    public String describe_cluster_name() throws org.apache.thrift.TException
+    public String describe_cluster_name() throws TException
     {
       send_describe_cluster_name();
       return recv_describe_cluster_name();
     }
 
-    public void send_describe_cluster_name() throws org.apache.thrift.TException
+    public void send_describe_cluster_name() throws TException
     {
       describe_cluster_name_args args = new describe_cluster_name_args();
       sendBase("describe_cluster_name", args);
     }
 
-    public String recv_describe_cluster_name() throws org.apache.thrift.TException
+    public String recv_describe_cluster_name() throws TException
     {
       describe_cluster_name_result result = new describe_cluster_name_result();
       receiveBase(result, "describe_cluster_name");
@@ -1251,19 +1258,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_cluster_name failed: unknown result");
     }
 
-    public String describe_version() throws org.apache.thrift.TException
+    public String describe_version() throws TException
     {
       send_describe_version();
       return recv_describe_version();
     }
 
-    public void send_describe_version() throws org.apache.thrift.TException
+    public void send_describe_version() throws TException
     {
       describe_version_args args = new describe_version_args();
       sendBase("describe_version", args);
     }
 
-    public String recv_describe_version() throws org.apache.thrift.TException
+    public String recv_describe_version() throws TException
     {
       describe_version_result result = new describe_version_result();
       receiveBase(result, "describe_version");
@@ -1273,20 +1280,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_version failed: unknown result");
     }
 
-    public List<TokenRange> describe_ring(String keyspace) throws InvalidRequestException, org.apache.thrift.TException
+    public List<TokenRange> describe_ring(String keyspace) throws InvalidRequestException, TException
     {
       send_describe_ring(keyspace);
       return recv_describe_ring();
     }
 
-    public void send_describe_ring(String keyspace) throws org.apache.thrift.TException
+    public void send_describe_ring(String keyspace) throws TException
     {
       describe_ring_args args = new describe_ring_args();
       args.setKeyspace(keyspace);
       sendBase("describe_ring", args);
     }
 
-    public List<TokenRange> recv_describe_ring() throws InvalidRequestException, org.apache.thrift.TException
+    public List<TokenRange> recv_describe_ring() throws InvalidRequestException, TException
     {
       describe_ring_result result = new describe_ring_result();
       receiveBase(result, "describe_ring");
@@ -1299,20 +1306,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_ring failed: unknown result");
     }
 
-    public List<TokenRange> describe_local_ring(String keyspace) throws InvalidRequestException, org.apache.thrift.TException
+    public List<TokenRange> describe_local_ring(String keyspace) throws InvalidRequestException, TException
     {
       send_describe_local_ring(keyspace);
       return recv_describe_local_ring();
     }
 
-    public void send_describe_local_ring(String keyspace) throws org.apache.thrift.TException
+    public void send_describe_local_ring(String keyspace) throws TException
     {
       describe_local_ring_args args = new describe_local_ring_args();
       args.setKeyspace(keyspace);
       sendBase("describe_local_ring", args);
     }
 
-    public List<TokenRange> recv_describe_local_ring() throws InvalidRequestException, org.apache.thrift.TException
+    public List<TokenRange> recv_describe_local_ring() throws InvalidRequestException, TException
     {
       describe_local_ring_result result = new describe_local_ring_result();
       receiveBase(result, "describe_local_ring");
@@ -1325,19 +1332,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_local_ring failed: unknown result");
     }
 
-    public Map<String,String> describe_token_map() throws InvalidRequestException, org.apache.thrift.TException
+    public Map<String,String> describe_token_map() throws InvalidRequestException, TException
     {
       send_describe_token_map();
       return recv_describe_token_map();
     }
 
-    public void send_describe_token_map() throws org.apache.thrift.TException
+    public void send_describe_token_map() throws TException
     {
       describe_token_map_args args = new describe_token_map_args();
       sendBase("describe_token_map", args);
     }
 
-    public Map<String,String> recv_describe_token_map() throws InvalidRequestException, org.apache.thrift.TException
+    public Map<String,String> recv_describe_token_map() throws InvalidRequestException, TException
     {
       describe_token_map_result result = new describe_token_map_result();
       receiveBase(result, "describe_token_map");
@@ -1350,19 +1357,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_token_map failed: unknown result");
     }
 
-    public String describe_partitioner() throws org.apache.thrift.TException
+    public String describe_partitioner() throws TException
     {
       send_describe_partitioner();
       return recv_describe_partitioner();
     }
 
-    public void send_describe_partitioner() throws org.apache.thrift.TException
+    public void send_describe_partitioner() throws TException
     {
       describe_partitioner_args args = new describe_partitioner_args();
       sendBase("describe_partitioner", args);
     }
 
-    public String recv_describe_partitioner() throws org.apache.thrift.TException
+    public String recv_describe_partitioner() throws TException
     {
       describe_partitioner_result result = new describe_partitioner_result();
       receiveBase(result, "describe_partitioner");
@@ -1372,19 +1379,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_partitioner failed: unknown result");
     }
 
-    public String describe_snitch() throws org.apache.thrift.TException
+    public String describe_snitch() throws TException
     {
       send_describe_snitch();
       return recv_describe_snitch();
     }
 
-    public void send_describe_snitch() throws org.apache.thrift.TException
+    public void send_describe_snitch() throws TException
     {
       describe_snitch_args args = new describe_snitch_args();
       sendBase("describe_snitch", args);
     }
 
-    public String recv_describe_snitch() throws org.apache.thrift.TException
+    public String recv_describe_snitch() throws TException
     {
       describe_snitch_result result = new describe_snitch_result();
       receiveBase(result, "describe_snitch");
@@ -1394,20 +1401,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_snitch failed: unknown result");
     }
 
-    public KsDef describe_keyspace(String keyspace) throws NotFoundException, InvalidRequestException, org.apache.thrift.TException
+    public KsDef describe_keyspace(String keyspace) throws NotFoundException, InvalidRequestException, TException
     {
       send_describe_keyspace(keyspace);
       return recv_describe_keyspace();
     }
 
-    public void send_describe_keyspace(String keyspace) throws org.apache.thrift.TException
+    public void send_describe_keyspace(String keyspace) throws TException
     {
       describe_keyspace_args args = new describe_keyspace_args();
       args.setKeyspace(keyspace);
       sendBase("describe_keyspace", args);
     }
 
-    public KsDef recv_describe_keyspace() throws NotFoundException, InvalidRequestException, org.apache.thrift.TException
+    public KsDef recv_describe_keyspace() throws NotFoundException, InvalidRequestException, TException
     {
       describe_keyspace_result result = new describe_keyspace_result();
       receiveBase(result, "describe_keyspace");
@@ -1423,13 +1430,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_keyspace failed: unknown result");
     }
 
-    public List<String> describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, org.apache.thrift.TException
+    public List<String> describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, TException
     {
       send_describe_splits(cfName, start_token, end_token, keys_per_split);
       return recv_describe_splits();
     }
 
-    public void send_describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws org.apache.thrift.TException
+    public void send_describe_splits(String cfName, String start_token, String end_token, int keys_per_split) throws TException
     {
       describe_splits_args args = new describe_splits_args();
       args.setCfName(cfName);
@@ -1439,7 +1446,7 @@ public class Cassandra {
       sendBase("describe_splits", args);
     }
 
-    public List<String> recv_describe_splits() throws InvalidRequestException, org.apache.thrift.TException
+    public List<String> recv_describe_splits() throws InvalidRequestException, TException
     {
       describe_splits_result result = new describe_splits_result();
       receiveBase(result, "describe_splits");
@@ -1452,19 +1459,19 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_splits failed: unknown result");
     }
 
-    public ByteBuffer trace_next_query() throws org.apache.thrift.TException
+    public ByteBuffer trace_next_query() throws TException
     {
       send_trace_next_query();
       return recv_trace_next_query();
     }
 
-    public void send_trace_next_query() throws org.apache.thrift.TException
+    public void send_trace_next_query() throws TException
     {
       trace_next_query_args args = new trace_next_query_args();
       sendBase("trace_next_query", args);
     }
 
-    public ByteBuffer recv_trace_next_query() throws org.apache.thrift.TException
+    public ByteBuffer recv_trace_next_query() throws TException
     {
       trace_next_query_result result = new trace_next_query_result();
       receiveBase(result, "trace_next_query");
@@ -1474,13 +1481,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "trace_next_query failed: unknown result");
     }
 
-    public List<CfSplit> describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, org.apache.thrift.TException
+    public List<CfSplit> describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws InvalidRequestException, TException
     {
       send_describe_splits_ex(cfName, start_token, end_token, keys_per_split);
       return recv_describe_splits_ex();
     }
 
-    public void send_describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws org.apache.thrift.TException
+    public void send_describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split) throws TException
     {
       describe_splits_ex_args args = new describe_splits_ex_args();
       args.setCfName(cfName);
@@ -1490,7 +1497,7 @@ public class Cassandra {
       sendBase("describe_splits_ex", args);
     }
 
-    public List<CfSplit> recv_describe_splits_ex() throws InvalidRequestException, org.apache.thrift.TException
+    public List<CfSplit> recv_describe_splits_ex() throws InvalidRequestException, TException
     {
       describe_splits_ex_result result = new describe_splits_ex_result();
       receiveBase(result, "describe_splits_ex");
@@ -1503,20 +1510,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "describe_splits_ex failed: unknown result");
     }
 
-    public String system_add_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_add_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_add_column_family(cf_def);
       return recv_system_add_column_family();
     }
 
-    public void send_system_add_column_family(CfDef cf_def) throws org.apache.thrift.TException
+    public void send_system_add_column_family(CfDef cf_def) throws TException
     {
       system_add_column_family_args args = new system_add_column_family_args();
       args.setCf_def(cf_def);
       sendBase("system_add_column_family", args);
     }
 
-    public String recv_system_add_column_family() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_add_column_family() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_add_column_family_result result = new system_add_column_family_result();
       receiveBase(result, "system_add_column_family");
@@ -1532,20 +1539,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_add_column_family failed: unknown result");
     }
 
-    public String system_drop_column_family(String column_family) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_drop_column_family(String column_family) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_drop_column_family(column_family);
       return recv_system_drop_column_family();
     }
 
-    public void send_system_drop_column_family(String column_family) throws org.apache.thrift.TException
+    public void send_system_drop_column_family(String column_family) throws TException
     {
       system_drop_column_family_args args = new system_drop_column_family_args();
       args.setColumn_family(column_family);
       sendBase("system_drop_column_family", args);
     }
 
-    public String recv_system_drop_column_family() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_drop_column_family() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_drop_column_family_result result = new system_drop_column_family_result();
       receiveBase(result, "system_drop_column_family");
@@ -1561,20 +1568,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_drop_column_family failed: unknown result");
     }
 
-    public String system_add_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_add_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_add_keyspace(ks_def);
       return recv_system_add_keyspace();
     }
 
-    public void send_system_add_keyspace(KsDef ks_def) throws org.apache.thrift.TException
+    public void send_system_add_keyspace(KsDef ks_def) throws TException
     {
       system_add_keyspace_args args = new system_add_keyspace_args();
       args.setKs_def(ks_def);
       sendBase("system_add_keyspace", args);
     }
 
-    public String recv_system_add_keyspace() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_add_keyspace() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_add_keyspace_result result = new system_add_keyspace_result();
       receiveBase(result, "system_add_keyspace");
@@ -1590,20 +1597,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_add_keyspace failed: unknown result");
     }
 
-    public String system_drop_keyspace(String keyspace) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_drop_keyspace(String keyspace) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_drop_keyspace(keyspace);
       return recv_system_drop_keyspace();
     }
 
-    public void send_system_drop_keyspace(String keyspace) throws org.apache.thrift.TException
+    public void send_system_drop_keyspace(String keyspace) throws TException
     {
       system_drop_keyspace_args args = new system_drop_keyspace_args();
       args.setKeyspace(keyspace);
       sendBase("system_drop_keyspace", args);
     }
 
-    public String recv_system_drop_keyspace() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_drop_keyspace() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_drop_keyspace_result result = new system_drop_keyspace_result();
       receiveBase(result, "system_drop_keyspace");
@@ -1619,20 +1626,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_drop_keyspace failed: unknown result");
     }
 
-    public String system_update_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_update_keyspace(KsDef ks_def) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_update_keyspace(ks_def);
       return recv_system_update_keyspace();
     }
 
-    public void send_system_update_keyspace(KsDef ks_def) throws org.apache.thrift.TException
+    public void send_system_update_keyspace(KsDef ks_def) throws TException
     {
       system_update_keyspace_args args = new system_update_keyspace_args();
       args.setKs_def(ks_def);
       sendBase("system_update_keyspace", args);
     }
 
-    public String recv_system_update_keyspace() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_update_keyspace() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_update_keyspace_result result = new system_update_keyspace_result();
       receiveBase(result, "system_update_keyspace");
@@ -1648,20 +1655,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_update_keyspace failed: unknown result");
     }
 
-    public String system_update_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String system_update_column_family(CfDef cf_def) throws InvalidRequestException, SchemaDisagreementException, TException
     {
       send_system_update_column_family(cf_def);
       return recv_system_update_column_family();
     }
 
-    public void send_system_update_column_family(CfDef cf_def) throws org.apache.thrift.TException
+    public void send_system_update_column_family(CfDef cf_def) throws TException
     {
       system_update_column_family_args args = new system_update_column_family_args();
       args.setCf_def(cf_def);
       sendBase("system_update_column_family", args);
     }
 
-    public String recv_system_update_column_family() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException
+    public String recv_system_update_column_family() throws InvalidRequestException, SchemaDisagreementException, TException
     {
       system_update_column_family_result result = new system_update_column_family_result();
       receiveBase(result, "system_update_column_family");
@@ -1677,13 +1684,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "system_update_column_family failed: unknown result");
     }
 
-    public CqlResult execute_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult execute_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       send_execute_cql_query(query, compression);
       return recv_execute_cql_query();
     }
 
-    public void send_execute_cql_query(ByteBuffer query, Compression compression) throws org.apache.thrift.TException
+    public void send_execute_cql_query(ByteBuffer query, Compression compression) throws TException
     {
       execute_cql_query_args args = new execute_cql_query_args();
       args.setQuery(query);
@@ -1691,7 +1698,7 @@ public class Cassandra {
       sendBase("execute_cql_query", args);
     }
 
-    public CqlResult recv_execute_cql_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult recv_execute_cql_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       execute_cql_query_result result = new execute_cql_query_result();
       receiveBase(result, "execute_cql_query");
@@ -1713,13 +1720,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "execute_cql_query failed: unknown result");
     }
 
-    public CqlResult execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       send_execute_cql3_query(query, compression, consistency);
       return recv_execute_cql3_query();
     }
 
-    public void send_execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws org.apache.thrift.TException
+    public void send_execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency) throws TException
     {
       execute_cql3_query_args args = new execute_cql3_query_args();
       args.setQuery(query);
@@ -1728,7 +1735,7 @@ public class Cassandra {
       sendBase("execute_cql3_query", args);
     }
 
-    public CqlResult recv_execute_cql3_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult recv_execute_cql3_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       execute_cql3_query_result result = new execute_cql3_query_result();
       receiveBase(result, "execute_cql3_query");
@@ -1750,13 +1757,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "execute_cql3_query failed: unknown result");
     }
 
-    public CqlPreparedResult prepare_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, org.apache.thrift.TException
+    public CqlPreparedResult prepare_cql_query(ByteBuffer query, Compression compression) throws InvalidRequestException, TException
     {
       send_prepare_cql_query(query, compression);
       return recv_prepare_cql_query();
     }
 
-    public void send_prepare_cql_query(ByteBuffer query, Compression compression) throws org.apache.thrift.TException
+    public void send_prepare_cql_query(ByteBuffer query, Compression compression) throws TException
     {
       prepare_cql_query_args args = new prepare_cql_query_args();
       args.setQuery(query);
@@ -1764,7 +1771,7 @@ public class Cassandra {
       sendBase("prepare_cql_query", args);
     }
 
-    public CqlPreparedResult recv_prepare_cql_query() throws InvalidRequestException, org.apache.thrift.TException
+    public CqlPreparedResult recv_prepare_cql_query() throws InvalidRequestException, TException
     {
       prepare_cql_query_result result = new prepare_cql_query_result();
       receiveBase(result, "prepare_cql_query");
@@ -1777,13 +1784,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "prepare_cql_query failed: unknown result");
     }
 
-    public CqlPreparedResult prepare_cql3_query(ByteBuffer query, Compression compression) throws InvalidRequestException, org.apache.thrift.TException
+    public CqlPreparedResult prepare_cql3_query(ByteBuffer query, Compression compression) throws InvalidRequestException, TException
     {
       send_prepare_cql3_query(query, compression);
       return recv_prepare_cql3_query();
     }
 
-    public void send_prepare_cql3_query(ByteBuffer query, Compression compression) throws org.apache.thrift.TException
+    public void send_prepare_cql3_query(ByteBuffer query, Compression compression) throws TException
     {
       prepare_cql3_query_args args = new prepare_cql3_query_args();
       args.setQuery(query);
@@ -1791,7 +1798,7 @@ public class Cassandra {
       sendBase("prepare_cql3_query", args);
     }
 
-    public CqlPreparedResult recv_prepare_cql3_query() throws InvalidRequestException, org.apache.thrift.TException
+    public CqlPreparedResult recv_prepare_cql3_query() throws InvalidRequestException, TException
     {
       prepare_cql3_query_result result = new prepare_cql3_query_result();
       receiveBase(result, "prepare_cql3_query");
@@ -1804,13 +1811,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "prepare_cql3_query failed: unknown result");
     }
 
-    public CqlResult execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       send_execute_prepared_cql_query(itemId, values);
       return recv_execute_prepared_cql_query();
     }
 
-    public void send_execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws org.apache.thrift.TException
+    public void send_execute_prepared_cql_query(int itemId, List<ByteBuffer> values) throws TException
     {
       execute_prepared_cql_query_args args = new execute_prepared_cql_query_args();
       args.setItemId(itemId);
@@ -1818,7 +1825,7 @@ public class Cassandra {
       sendBase("execute_prepared_cql_query", args);
     }
 
-    public CqlResult recv_execute_prepared_cql_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult recv_execute_prepared_cql_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       execute_prepared_cql_query_result result = new execute_prepared_cql_query_result();
       receiveBase(result, "execute_prepared_cql_query");
@@ -1840,13 +1847,13 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "execute_prepared_cql_query failed: unknown result");
     }
 
-    public CqlResult execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       send_execute_prepared_cql3_query(itemId, values, consistency);
       return recv_execute_prepared_cql3_query();
     }
 
-    public void send_execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws org.apache.thrift.TException
+    public void send_execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency) throws TException
     {
       execute_prepared_cql3_query_args args = new execute_prepared_cql3_query_args();
       args.setItemId(itemId);
@@ -1855,7 +1862,7 @@ public class Cassandra {
       sendBase("execute_prepared_cql3_query", args);
     }
 
-    public CqlResult recv_execute_prepared_cql3_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException
+    public CqlResult recv_execute_prepared_cql3_query() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException
     {
       execute_prepared_cql3_query_result result = new execute_prepared_cql3_query_result();
       receiveBase(result, "execute_prepared_cql3_query");
@@ -1877,20 +1884,20 @@ public class Cassandra {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "execute_prepared_cql3_query failed: unknown result");
     }
 
-    public void set_cql_version(String version) throws InvalidRequestException, org.apache.thrift.TException
+    public void set_cql_version(String version) throws InvalidRequestException, TException
     {
       send_set_cql_version(version);
       recv_set_cql_version();
     }
 
-    public void send_set_cql_version(String version) throws org.apache.thrift.TException
+    public void send_set_cql_version(String version) throws TException
     {
       set_cql_version_args args = new set_cql_version_args();
       args.setVersion(version);
       sendBase("set_cql_version", args);
     }
 
-    public void recv_set_cql_version() throws InvalidRequestException, org.apache.thrift.TException
+    public void recv_set_cql_version() throws InvalidRequestException, TException
     {
       set_cql_version_result result = new set_cql_version_result();
       receiveBase(result, "set_cql_version");
@@ -1918,7 +1925,7 @@ public class Cassandra {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void login(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void login(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       login_call method_call = new login_call(auth_request, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1927,12 +1934,12 @@ public class Cassandra {
 
     public static class login_call extends org.apache.thrift.async.TAsyncMethodCall {
       private AuthenticationRequest auth_request;
-      public login_call(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public login_call(AuthenticationRequest auth_request, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.auth_request = auth_request;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("login", org.apache.thrift.protocol.TMessageType.CALL, 0));
         login_args args = new login_args();
         args.setAuth_request(auth_request);
@@ -1940,7 +1947,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws AuthenticationException, AuthorizationException, org.apache.thrift.TException {
+      public void getResult() throws AuthenticationException, AuthorizationException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1950,7 +1957,7 @@ public class Cassandra {
       }
     }
 
-    public void set_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void set_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       set_keyspace_call method_call = new set_keyspace_call(keyspace, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1959,12 +1966,12 @@ public class Cassandra {
 
     public static class set_keyspace_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String keyspace;
-      public set_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public set_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyspace = keyspace;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("set_keyspace", org.apache.thrift.protocol.TMessageType.CALL, 0));
         set_keyspace_args args = new set_keyspace_args();
         args.setKeyspace(keyspace);
@@ -1972,7 +1979,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -1982,7 +1989,7 @@ public class Cassandra {
       }
     }
 
-    public void get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_call method_call = new get_call(key, column_path, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1993,14 +2000,14 @@ public class Cassandra {
       private ByteBuffer key;
       private ColumnPath column_path;
       private ConsistencyLevel consistency_level;
-      public get_call(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_call(ByteBuffer key, ColumnPath column_path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_path = column_path;
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_args args = new get_args();
         args.setKey(key);
@@ -2010,7 +2017,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public ColumnOrSuperColumn getResult() throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public ColumnOrSuperColumn getResult() throws InvalidRequestException, NotFoundException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2020,7 +2027,7 @@ public class Cassandra {
       }
     }
 
-    public void get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_slice(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_slice_call method_call = new get_slice_call(key, column_parent, predicate, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2032,7 +2039,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private SlicePredicate predicate;
       private ConsistencyLevel consistency_level;
-      public get_slice_call(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_slice_call(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_parent = column_parent;
@@ -2040,7 +2047,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_slice", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_slice_args args = new get_slice_args();
         args.setKey(key);
@@ -2051,7 +2058,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<ColumnOrSuperColumn> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public List<ColumnOrSuperColumn> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2061,7 +2068,7 @@ public class Cassandra {
       }
     }
 
-    public void get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_count(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_count_call method_call = new get_count_call(key, column_parent, predicate, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2073,7 +2080,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private SlicePredicate predicate;
       private ConsistencyLevel consistency_level;
-      public get_count_call(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_count_call(ByteBuffer key, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_parent = column_parent;
@@ -2081,7 +2088,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_count", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_count_args args = new get_count_args();
         args.setKey(key);
@@ -2092,7 +2099,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public int getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public int getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2102,7 +2109,7 @@ public class Cassandra {
       }
     }
 
-    public void multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void multiget_slice(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       multiget_slice_call method_call = new multiget_slice_call(keys, column_parent, predicate, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2114,7 +2121,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private SlicePredicate predicate;
       private ConsistencyLevel consistency_level;
-      public multiget_slice_call(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public multiget_slice_call(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keys = keys;
         this.column_parent = column_parent;
@@ -2122,7 +2129,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("multiget_slice", org.apache.thrift.protocol.TMessageType.CALL, 0));
         multiget_slice_args args = new multiget_slice_args();
         args.setKeys(keys);
@@ -2133,7 +2140,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public Map<ByteBuffer,List<ColumnOrSuperColumn>> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public Map<ByteBuffer,List<ColumnOrSuperColumn>> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2143,7 +2150,7 @@ public class Cassandra {
       }
     }
 
-    public void multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void multiget_count(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       multiget_count_call method_call = new multiget_count_call(keys, column_parent, predicate, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2155,7 +2162,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private SlicePredicate predicate;
       private ConsistencyLevel consistency_level;
-      public multiget_count_call(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public multiget_count_call(List<ByteBuffer> keys, ColumnParent column_parent, SlicePredicate predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keys = keys;
         this.column_parent = column_parent;
@@ -2163,7 +2170,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("multiget_count", org.apache.thrift.protocol.TMessageType.CALL, 0));
         multiget_count_args args = new multiget_count_args();
         args.setKeys(keys);
@@ -2174,7 +2181,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public Map<ByteBuffer,Integer> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public Map<ByteBuffer,Integer> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2184,7 +2191,7 @@ public class Cassandra {
       }
     }
 
-    public void get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_range_slices(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_range_slices_call method_call = new get_range_slices_call(column_parent, predicate, range, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2196,7 +2203,7 @@ public class Cassandra {
       private SlicePredicate predicate;
       private KeyRange range;
       private ConsistencyLevel consistency_level;
-      public get_range_slices_call(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_range_slices_call(ColumnParent column_parent, SlicePredicate predicate, KeyRange range, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.column_parent = column_parent;
         this.predicate = predicate;
@@ -2204,7 +2211,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_range_slices", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_range_slices_args args = new get_range_slices_args();
         args.setColumn_parent(column_parent);
@@ -2215,7 +2222,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2225,7 +2232,7 @@ public class Cassandra {
       }
     }
 
-    public void get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_paged_slice(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_paged_slice_call method_call = new get_paged_slice_call(column_family, range, start_column, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2237,7 +2244,7 @@ public class Cassandra {
       private KeyRange range;
       private ByteBuffer start_column;
       private ConsistencyLevel consistency_level;
-      public get_paged_slice_call(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_paged_slice_call(String column_family, KeyRange range, ByteBuffer start_column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.column_family = column_family;
         this.range = range;
@@ -2245,7 +2252,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_paged_slice", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_paged_slice_args args = new get_paged_slice_args();
         args.setColumn_family(column_family);
@@ -2256,7 +2263,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2266,7 +2273,7 @@ public class Cassandra {
       }
     }
 
-    public void get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_indexed_slices(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_indexed_slices_call method_call = new get_indexed_slices_call(column_parent, index_clause, column_predicate, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2278,7 +2285,7 @@ public class Cassandra {
       private IndexClause index_clause;
       private SlicePredicate column_predicate;
       private ConsistencyLevel consistency_level;
-      public get_indexed_slices_call(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_indexed_slices_call(ColumnParent column_parent, IndexClause index_clause, SlicePredicate column_predicate, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.column_parent = column_parent;
         this.index_clause = index_clause;
@@ -2286,7 +2293,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_indexed_slices", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_indexed_slices_args args = new get_indexed_slices_args();
         args.setColumn_parent(column_parent);
@@ -2297,7 +2304,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public List<KeySlice> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2307,7 +2314,7 @@ public class Cassandra {
       }
     }
 
-    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void insert(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       insert_call method_call = new insert_call(key, column_parent, column, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2319,7 +2326,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private Column column;
       private ConsistencyLevel consistency_level;
-      public insert_call(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public insert_call(ByteBuffer key, ColumnParent column_parent, Column column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_parent = column_parent;
@@ -2327,7 +2334,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("insert", org.apache.thrift.protocol.TMessageType.CALL, 0));
         insert_args args = new insert_args();
         args.setKey(key);
@@ -2338,7 +2345,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2348,7 +2355,7 @@ public class Cassandra {
       }
     }
 
-    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void add(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       add_call method_call = new add_call(key, column_parent, column, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2360,7 +2367,7 @@ public class Cassandra {
       private ColumnParent column_parent;
       private CounterColumn column;
       private ConsistencyLevel consistency_level;
-      public add_call(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public add_call(ByteBuffer key, ColumnParent column_parent, CounterColumn column, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_parent = column_parent;
@@ -2368,7 +2375,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("add", org.apache.thrift.protocol.TMessageType.CALL, 0));
         add_args args = new add_args();
         args.setKey(key);
@@ -2379,7 +2386,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2389,7 +2396,7 @@ public class Cassandra {
       }
     }
 
-    public void cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void cas(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       cas_call method_call = new cas_call(key, column_family, expected, updates, serial_consistency_level, commit_consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2403,7 +2410,7 @@ public class Cassandra {
       private List<Column> updates;
       private ConsistencyLevel serial_consistency_level;
       private ConsistencyLevel commit_consistency_level;
-      public cas_call(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public cas_call(ByteBuffer key, String column_family, List<Column> expected, List<Column> updates, ConsistencyLevel serial_consistency_level, ConsistencyLevel commit_consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_family = column_family;
@@ -2413,7 +2420,7 @@ public class Cassandra {
         this.commit_consistency_level = commit_consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("cas", org.apache.thrift.protocol.TMessageType.CALL, 0));
         cas_args args = new cas_args();
         args.setKey(key);
@@ -2426,7 +2433,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CASResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public CASResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2436,7 +2443,7 @@ public class Cassandra {
       }
     }
 
-    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void remove(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       remove_call method_call = new remove_call(key, column_path, timestamp, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2448,7 +2455,7 @@ public class Cassandra {
       private ColumnPath column_path;
       private long timestamp;
       private ConsistencyLevel consistency_level;
-      public remove_call(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public remove_call(ByteBuffer key, ColumnPath column_path, long timestamp, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.column_path = column_path;
@@ -2456,7 +2463,7 @@ public class Cassandra {
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("remove", org.apache.thrift.protocol.TMessageType.CALL, 0));
         remove_args args = new remove_args();
         args.setKey(key);
@@ -2467,7 +2474,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2477,7 +2484,7 @@ public class Cassandra {
       }
     }
 
-    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void remove_counter(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       remove_counter_call method_call = new remove_counter_call(key, path, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2488,14 +2495,14 @@ public class Cassandra {
       private ByteBuffer key;
       private ColumnPath path;
       private ConsistencyLevel consistency_level;
-      public remove_counter_call(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public remove_counter_call(ByteBuffer key, ColumnPath path, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.key = key;
         this.path = path;
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("remove_counter", org.apache.thrift.protocol.TMessageType.CALL, 0));
         remove_counter_args args = new remove_counter_args();
         args.setKey(key);
@@ -2505,7 +2512,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2515,7 +2522,7 @@ public class Cassandra {
       }
     }
 
-    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       batch_mutate_call method_call = new batch_mutate_call(mutation_map, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2525,13 +2532,13 @@ public class Cassandra {
     public static class batch_mutate_call extends org.apache.thrift.async.TAsyncMethodCall {
       private Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map;
       private ConsistencyLevel consistency_level;
-      public batch_mutate_call(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public batch_mutate_call(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mutation_map = mutation_map;
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("batch_mutate", org.apache.thrift.protocol.TMessageType.CALL, 0));
         batch_mutate_args args = new batch_mutate_args();
         args.setMutation_map(mutation_map);
@@ -2540,7 +2547,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2550,7 +2557,7 @@ public class Cassandra {
       }
     }
 
-    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void atomic_batch_mutate(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       atomic_batch_mutate_call method_call = new atomic_batch_mutate_call(mutation_map, consistency_level, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2560,13 +2567,13 @@ public class Cassandra {
     public static class atomic_batch_mutate_call extends org.apache.thrift.async.TAsyncMethodCall {
       private Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map;
       private ConsistencyLevel consistency_level;
-      public atomic_batch_mutate_call(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public atomic_batch_mutate_call(Map<ByteBuffer,Map<String,List<Mutation>>> mutation_map, ConsistencyLevel consistency_level, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mutation_map = mutation_map;
         this.consistency_level = consistency_level;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("atomic_batch_mutate", org.apache.thrift.protocol.TMessageType.CALL, 0));
         atomic_batch_mutate_args args = new atomic_batch_mutate_args();
         args.setMutation_map(mutation_map);
@@ -2575,7 +2582,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2585,7 +2592,7 @@ public class Cassandra {
       }
     }
 
-    public void truncate(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void truncate(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       truncate_call method_call = new truncate_call(cfname, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2594,12 +2601,12 @@ public class Cassandra {
 
     public static class truncate_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String cfname;
-      public truncate_call(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public truncate_call(String cfname, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cfname = cfname;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("truncate", org.apache.thrift.protocol.TMessageType.CALL, 0));
         truncate_args args = new truncate_args();
         args.setCfname(cfname);
@@ -2607,7 +2614,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2617,7 +2624,7 @@ public class Cassandra {
       }
     }
 
-    public void get_multi_slice(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void get_multi_slice(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       get_multi_slice_call method_call = new get_multi_slice_call(request, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2626,12 +2633,12 @@ public class Cassandra {
 
     public static class get_multi_slice_call extends org.apache.thrift.async.TAsyncMethodCall {
       private MultiSliceRequest request;
-      public get_multi_slice_call(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public get_multi_slice_call(MultiSliceRequest request, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.request = request;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("get_multi_slice", org.apache.thrift.protocol.TMessageType.CALL, 0));
         get_multi_slice_args args = new get_multi_slice_args();
         args.setRequest(request);
@@ -2639,7 +2646,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<ColumnOrSuperColumn> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, org.apache.thrift.TException {
+      public List<ColumnOrSuperColumn> getResult() throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2649,7 +2656,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_schema_versions(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_schema_versions(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_schema_versions_call method_call = new describe_schema_versions_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2657,18 +2664,18 @@ public class Cassandra {
     }
 
     public static class describe_schema_versions_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_schema_versions_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_schema_versions_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_schema_versions", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_schema_versions_args args = new describe_schema_versions_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public Map<String,List<String>> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public Map<String,List<String>> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2678,7 +2685,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_keyspaces(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_keyspaces(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_keyspaces_call method_call = new describe_keyspaces_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2686,18 +2693,18 @@ public class Cassandra {
     }
 
     public static class describe_keyspaces_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_keyspaces_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_keyspaces_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_keyspaces", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_keyspaces_args args = new describe_keyspaces_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public List<KsDef> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public List<KsDef> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2707,7 +2714,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_cluster_name(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_cluster_name(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_cluster_name_call method_call = new describe_cluster_name_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2715,18 +2722,18 @@ public class Cassandra {
     }
 
     public static class describe_cluster_name_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_cluster_name_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_cluster_name_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_cluster_name", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_cluster_name_args args = new describe_cluster_name_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws org.apache.thrift.TException {
+      public String getResult() throws TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2736,7 +2743,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_version(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_version(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_version_call method_call = new describe_version_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2744,18 +2751,18 @@ public class Cassandra {
     }
 
     public static class describe_version_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_version_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_version_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_version", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_version_args args = new describe_version_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws org.apache.thrift.TException {
+      public String getResult() throws TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2765,7 +2772,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_ring_call method_call = new describe_ring_call(keyspace, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2774,12 +2781,12 @@ public class Cassandra {
 
     public static class describe_ring_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String keyspace;
-      public describe_ring_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_ring_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyspace = keyspace;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_ring", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_ring_args args = new describe_ring_args();
         args.setKeyspace(keyspace);
@@ -2787,7 +2794,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<TokenRange> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public List<TokenRange> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2797,7 +2804,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_local_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_local_ring(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_local_ring_call method_call = new describe_local_ring_call(keyspace, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2806,12 +2813,12 @@ public class Cassandra {
 
     public static class describe_local_ring_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String keyspace;
-      public describe_local_ring_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_local_ring_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyspace = keyspace;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_local_ring", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_local_ring_args args = new describe_local_ring_args();
         args.setKeyspace(keyspace);
@@ -2819,7 +2826,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<TokenRange> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public List<TokenRange> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2829,7 +2836,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_token_map(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_token_map(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_token_map_call method_call = new describe_token_map_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2837,18 +2844,18 @@ public class Cassandra {
     }
 
     public static class describe_token_map_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_token_map_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_token_map_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_token_map", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_token_map_args args = new describe_token_map_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public Map<String,String> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public Map<String,String> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2858,7 +2865,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_partitioner(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_partitioner(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_partitioner_call method_call = new describe_partitioner_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2866,18 +2873,18 @@ public class Cassandra {
     }
 
     public static class describe_partitioner_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_partitioner_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_partitioner_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_partitioner", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_partitioner_args args = new describe_partitioner_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws org.apache.thrift.TException {
+      public String getResult() throws TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2887,7 +2894,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_snitch(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_snitch(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_snitch_call method_call = new describe_snitch_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2895,18 +2902,18 @@ public class Cassandra {
     }
 
     public static class describe_snitch_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public describe_snitch_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_snitch_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_snitch", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_snitch_args args = new describe_snitch_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws org.apache.thrift.TException {
+      public String getResult() throws TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2916,7 +2923,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_keyspace_call method_call = new describe_keyspace_call(keyspace, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2925,12 +2932,12 @@ public class Cassandra {
 
     public static class describe_keyspace_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String keyspace;
-      public describe_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyspace = keyspace;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_keyspace", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_keyspace_args args = new describe_keyspace_args();
         args.setKeyspace(keyspace);
@@ -2938,7 +2945,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public KsDef getResult() throws NotFoundException, InvalidRequestException, org.apache.thrift.TException {
+      public KsDef getResult() throws NotFoundException, InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2948,7 +2955,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_splits(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_splits(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_splits_call method_call = new describe_splits_call(cfName, start_token, end_token, keys_per_split, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2960,7 +2967,7 @@ public class Cassandra {
       private String start_token;
       private String end_token;
       private int keys_per_split;
-      public describe_splits_call(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_splits_call(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cfName = cfName;
         this.start_token = start_token;
@@ -2968,7 +2975,7 @@ public class Cassandra {
         this.keys_per_split = keys_per_split;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_splits", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_splits_args args = new describe_splits_args();
         args.setCfName(cfName);
@@ -2979,7 +2986,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<String> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public List<String> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -2989,7 +2996,7 @@ public class Cassandra {
       }
     }
 
-    public void trace_next_query(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void trace_next_query(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       trace_next_query_call method_call = new trace_next_query_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2997,18 +3004,18 @@ public class Cassandra {
     }
 
     public static class trace_next_query_call extends org.apache.thrift.async.TAsyncMethodCall {
-      public trace_next_query_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public trace_next_query_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("trace_next_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         trace_next_query_args args = new trace_next_query_args();
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public ByteBuffer getResult() throws org.apache.thrift.TException {
+      public ByteBuffer getResult() throws TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3018,7 +3025,7 @@ public class Cassandra {
       }
     }
 
-    public void describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void describe_splits_ex(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       describe_splits_ex_call method_call = new describe_splits_ex_call(cfName, start_token, end_token, keys_per_split, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3030,7 +3037,7 @@ public class Cassandra {
       private String start_token;
       private String end_token;
       private int keys_per_split;
-      public describe_splits_ex_call(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public describe_splits_ex_call(String cfName, String start_token, String end_token, int keys_per_split, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cfName = cfName;
         this.start_token = start_token;
@@ -3038,7 +3045,7 @@ public class Cassandra {
         this.keys_per_split = keys_per_split;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("describe_splits_ex", org.apache.thrift.protocol.TMessageType.CALL, 0));
         describe_splits_ex_args args = new describe_splits_ex_args();
         args.setCfName(cfName);
@@ -3049,7 +3056,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public List<CfSplit> getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public List<CfSplit> getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3059,7 +3066,7 @@ public class Cassandra {
       }
     }
 
-    public void system_add_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_add_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_add_column_family_call method_call = new system_add_column_family_call(cf_def, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3068,12 +3075,12 @@ public class Cassandra {
 
     public static class system_add_column_family_call extends org.apache.thrift.async.TAsyncMethodCall {
       private CfDef cf_def;
-      public system_add_column_family_call(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_add_column_family_call(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cf_def = cf_def;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_add_column_family", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_add_column_family_args args = new system_add_column_family_args();
         args.setCf_def(cf_def);
@@ -3081,7 +3088,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3091,7 +3098,7 @@ public class Cassandra {
       }
     }
 
-    public void system_drop_column_family(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_drop_column_family(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_drop_column_family_call method_call = new system_drop_column_family_call(column_family, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3100,12 +3107,12 @@ public class Cassandra {
 
     public static class system_drop_column_family_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String column_family;
-      public system_drop_column_family_call(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_drop_column_family_call(String column_family, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.column_family = column_family;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_drop_column_family", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_drop_column_family_args args = new system_drop_column_family_args();
         args.setColumn_family(column_family);
@@ -3113,7 +3120,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3123,7 +3130,7 @@ public class Cassandra {
       }
     }
 
-    public void system_add_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_add_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_add_keyspace_call method_call = new system_add_keyspace_call(ks_def, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3132,12 +3139,12 @@ public class Cassandra {
 
     public static class system_add_keyspace_call extends org.apache.thrift.async.TAsyncMethodCall {
       private KsDef ks_def;
-      public system_add_keyspace_call(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_add_keyspace_call(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.ks_def = ks_def;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_add_keyspace", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_add_keyspace_args args = new system_add_keyspace_args();
         args.setKs_def(ks_def);
@@ -3145,7 +3152,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3155,7 +3162,7 @@ public class Cassandra {
       }
     }
 
-    public void system_drop_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_drop_keyspace(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_drop_keyspace_call method_call = new system_drop_keyspace_call(keyspace, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3164,12 +3171,12 @@ public class Cassandra {
 
     public static class system_drop_keyspace_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String keyspace;
-      public system_drop_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_drop_keyspace_call(String keyspace, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyspace = keyspace;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_drop_keyspace", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_drop_keyspace_args args = new system_drop_keyspace_args();
         args.setKeyspace(keyspace);
@@ -3177,7 +3184,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3187,7 +3194,7 @@ public class Cassandra {
       }
     }
 
-    public void system_update_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_update_keyspace(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_update_keyspace_call method_call = new system_update_keyspace_call(ks_def, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3196,12 +3203,12 @@ public class Cassandra {
 
     public static class system_update_keyspace_call extends org.apache.thrift.async.TAsyncMethodCall {
       private KsDef ks_def;
-      public system_update_keyspace_call(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_update_keyspace_call(KsDef ks_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.ks_def = ks_def;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_update_keyspace", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_update_keyspace_args args = new system_update_keyspace_args();
         args.setKs_def(ks_def);
@@ -3209,7 +3216,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3219,7 +3226,7 @@ public class Cassandra {
       }
     }
 
-    public void system_update_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void system_update_column_family(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       system_update_column_family_call method_call = new system_update_column_family_call(cf_def, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3228,12 +3235,12 @@ public class Cassandra {
 
     public static class system_update_column_family_call extends org.apache.thrift.async.TAsyncMethodCall {
       private CfDef cf_def;
-      public system_update_column_family_call(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public system_update_column_family_call(CfDef cf_def, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.cf_def = cf_def;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("system_update_column_family", org.apache.thrift.protocol.TMessageType.CALL, 0));
         system_update_column_family_args args = new system_update_column_family_args();
         args.setCf_def(cf_def);
@@ -3241,7 +3248,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public String getResult() throws InvalidRequestException, SchemaDisagreementException, org.apache.thrift.TException {
+      public String getResult() throws InvalidRequestException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3251,7 +3258,7 @@ public class Cassandra {
       }
     }
 
-    public void execute_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void execute_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       execute_cql_query_call method_call = new execute_cql_query_call(query, compression, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3261,13 +3268,13 @@ public class Cassandra {
     public static class execute_cql_query_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ByteBuffer query;
       private Compression compression;
-      public execute_cql_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public execute_cql_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
         this.compression = compression;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("execute_cql_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         execute_cql_query_args args = new execute_cql_query_args();
         args.setQuery(query);
@@ -3276,7 +3283,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException {
+      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3286,7 +3293,7 @@ public class Cassandra {
       }
     }
 
-    public void execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void execute_cql3_query(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       execute_cql3_query_call method_call = new execute_cql3_query_call(query, compression, consistency, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3297,14 +3304,14 @@ public class Cassandra {
       private ByteBuffer query;
       private Compression compression;
       private ConsistencyLevel consistency;
-      public execute_cql3_query_call(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public execute_cql3_query_call(ByteBuffer query, Compression compression, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
         this.compression = compression;
         this.consistency = consistency;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("execute_cql3_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         execute_cql3_query_args args = new execute_cql3_query_args();
         args.setQuery(query);
@@ -3314,7 +3321,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException {
+      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3324,7 +3331,7 @@ public class Cassandra {
       }
     }
 
-    public void prepare_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void prepare_cql_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       prepare_cql_query_call method_call = new prepare_cql_query_call(query, compression, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3334,13 +3341,13 @@ public class Cassandra {
     public static class prepare_cql_query_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ByteBuffer query;
       private Compression compression;
-      public prepare_cql_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public prepare_cql_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
         this.compression = compression;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("prepare_cql_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         prepare_cql_query_args args = new prepare_cql_query_args();
         args.setQuery(query);
@@ -3349,7 +3356,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlPreparedResult getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public CqlPreparedResult getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3359,7 +3366,7 @@ public class Cassandra {
       }
     }
 
-    public void prepare_cql3_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void prepare_cql3_query(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       prepare_cql3_query_call method_call = new prepare_cql3_query_call(query, compression, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3369,13 +3376,13 @@ public class Cassandra {
     public static class prepare_cql3_query_call extends org.apache.thrift.async.TAsyncMethodCall {
       private ByteBuffer query;
       private Compression compression;
-      public prepare_cql3_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public prepare_cql3_query_call(ByteBuffer query, Compression compression, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
         this.compression = compression;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("prepare_cql3_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         prepare_cql3_query_args args = new prepare_cql3_query_args();
         args.setQuery(query);
@@ -3384,7 +3391,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlPreparedResult getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public CqlPreparedResult getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3394,7 +3401,7 @@ public class Cassandra {
       }
     }
 
-    public void execute_prepared_cql_query(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void execute_prepared_cql_query(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       execute_prepared_cql_query_call method_call = new execute_prepared_cql_query_call(itemId, values, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3404,13 +3411,13 @@ public class Cassandra {
     public static class execute_prepared_cql_query_call extends org.apache.thrift.async.TAsyncMethodCall {
       private int itemId;
       private List<ByteBuffer> values;
-      public execute_prepared_cql_query_call(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public execute_prepared_cql_query_call(int itemId, List<ByteBuffer> values, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.itemId = itemId;
         this.values = values;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("execute_prepared_cql_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         execute_prepared_cql_query_args args = new execute_prepared_cql_query_args();
         args.setItemId(itemId);
@@ -3419,7 +3426,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException {
+      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3429,7 +3436,7 @@ public class Cassandra {
       }
     }
 
-    public void execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void execute_prepared_cql3_query(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       execute_prepared_cql3_query_call method_call = new execute_prepared_cql3_query_call(itemId, values, consistency, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3440,14 +3447,14 @@ public class Cassandra {
       private int itemId;
       private List<ByteBuffer> values;
       private ConsistencyLevel consistency;
-      public execute_prepared_cql3_query_call(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public execute_prepared_cql3_query_call(int itemId, List<ByteBuffer> values, ConsistencyLevel consistency, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.itemId = itemId;
         this.values = values;
         this.consistency = consistency;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("execute_prepared_cql3_query", org.apache.thrift.protocol.TMessageType.CALL, 0));
         execute_prepared_cql3_query_args args = new execute_prepared_cql3_query_args();
         args.setItemId(itemId);
@@ -3457,7 +3464,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, org.apache.thrift.TException {
+      public CqlResult getResult() throws InvalidRequestException, UnavailableException, TimedOutException, SchemaDisagreementException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3467,7 +3474,7 @@ public class Cassandra {
       }
     }
 
-    public void set_cql_version(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void set_cql_version(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws TException {
       checkReady();
       set_cql_version_call method_call = new set_cql_version_call(version, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3476,12 +3483,12 @@ public class Cassandra {
 
     public static class set_cql_version_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String version;
-      public set_cql_version_call(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public set_cql_version_call(String version, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.version = version;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("set_cql_version", org.apache.thrift.protocol.TMessageType.CALL, 0));
         set_cql_version_args args = new set_cql_version_args();
         args.setVersion(version);
@@ -3489,7 +3496,7 @@ public class Cassandra {
         prot.writeMessageEnd();
       }
 
-      public void getResult() throws InvalidRequestException, org.apache.thrift.TException {
+      public void getResult() throws InvalidRequestException, TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -3573,7 +3580,7 @@ public class Cassandra {
         return false;
       }
 
-      public login_result getResult(I iface, login_args args) throws org.apache.thrift.TException {
+      public login_result getResult(I iface, login_args args) throws TException {
         login_result result = new login_result();
         try {
           iface.login(args.auth_request);
@@ -3599,7 +3606,7 @@ public class Cassandra {
         return false;
       }
 
-      public set_keyspace_result getResult(I iface, set_keyspace_args args) throws org.apache.thrift.TException {
+      public set_keyspace_result getResult(I iface, set_keyspace_args args) throws TException {
         set_keyspace_result result = new set_keyspace_result();
         try {
           iface.set_keyspace(args.keyspace);
@@ -3623,7 +3630,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_result getResult(I iface, get_args args) throws org.apache.thrift.TException {
+      public get_result getResult(I iface, get_args args) throws TException {
         get_result result = new get_result();
         try {
           result.success = iface.get(args.key, args.column_path, args.consistency_level);
@@ -3653,7 +3660,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_slice_result getResult(I iface, get_slice_args args) throws org.apache.thrift.TException {
+      public get_slice_result getResult(I iface, get_slice_args args) throws TException {
         get_slice_result result = new get_slice_result();
         try {
           result.success = iface.get_slice(args.key, args.column_parent, args.predicate, args.consistency_level);
@@ -3681,7 +3688,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_count_result getResult(I iface, get_count_args args) throws org.apache.thrift.TException {
+      public get_count_result getResult(I iface, get_count_args args) throws TException {
         get_count_result result = new get_count_result();
         try {
           result.success = iface.get_count(args.key, args.column_parent, args.predicate, args.consistency_level);
@@ -3710,7 +3717,7 @@ public class Cassandra {
         return false;
       }
 
-      public multiget_slice_result getResult(I iface, multiget_slice_args args) throws org.apache.thrift.TException {
+      public multiget_slice_result getResult(I iface, multiget_slice_args args) throws TException {
         multiget_slice_result result = new multiget_slice_result();
         try {
           result.success = iface.multiget_slice(args.keys, args.column_parent, args.predicate, args.consistency_level);
@@ -3738,7 +3745,7 @@ public class Cassandra {
         return false;
       }
 
-      public multiget_count_result getResult(I iface, multiget_count_args args) throws org.apache.thrift.TException {
+      public multiget_count_result getResult(I iface, multiget_count_args args) throws TException {
         multiget_count_result result = new multiget_count_result();
         try {
           result.success = iface.multiget_count(args.keys, args.column_parent, args.predicate, args.consistency_level);
@@ -3766,7 +3773,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_range_slices_result getResult(I iface, get_range_slices_args args) throws org.apache.thrift.TException {
+      public get_range_slices_result getResult(I iface, get_range_slices_args args) throws TException {
         get_range_slices_result result = new get_range_slices_result();
         try {
           result.success = iface.get_range_slices(args.column_parent, args.predicate, args.range, args.consistency_level);
@@ -3794,7 +3801,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_paged_slice_result getResult(I iface, get_paged_slice_args args) throws org.apache.thrift.TException {
+      public get_paged_slice_result getResult(I iface, get_paged_slice_args args) throws TException {
         get_paged_slice_result result = new get_paged_slice_result();
         try {
           result.success = iface.get_paged_slice(args.column_family, args.range, args.start_column, args.consistency_level);
@@ -3822,7 +3829,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_indexed_slices_result getResult(I iface, get_indexed_slices_args args) throws org.apache.thrift.TException {
+      public get_indexed_slices_result getResult(I iface, get_indexed_slices_args args) throws TException {
         get_indexed_slices_result result = new get_indexed_slices_result();
         try {
           result.success = iface.get_indexed_slices(args.column_parent, args.index_clause, args.column_predicate, args.consistency_level);
@@ -3850,7 +3857,7 @@ public class Cassandra {
         return false;
       }
 
-      public insert_result getResult(I iface, insert_args args) throws org.apache.thrift.TException {
+      public insert_result getResult(I iface, insert_args args) throws TException {
         insert_result result = new insert_result();
         try {
           iface.insert(args.key, args.column_parent, args.column, args.consistency_level);
@@ -3878,7 +3885,7 @@ public class Cassandra {
         return false;
       }
 
-      public add_result getResult(I iface, add_args args) throws org.apache.thrift.TException {
+      public add_result getResult(I iface, add_args args) throws TException {
         add_result result = new add_result();
         try {
           iface.add(args.key, args.column_parent, args.column, args.consistency_level);
@@ -3906,7 +3913,7 @@ public class Cassandra {
         return false;
       }
 
-      public cas_result getResult(I iface, cas_args args) throws org.apache.thrift.TException {
+      public cas_result getResult(I iface, cas_args args) throws TException {
         cas_result result = new cas_result();
         try {
           result.success = iface.cas(args.key, args.column_family, args.expected, args.updates, args.serial_consistency_level, args.commit_consistency_level);
@@ -3934,7 +3941,7 @@ public class Cassandra {
         return false;
       }
 
-      public remove_result getResult(I iface, remove_args args) throws org.apache.thrift.TException {
+      public remove_result getResult(I iface, remove_args args) throws TException {
         remove_result result = new remove_result();
         try {
           iface.remove(args.key, args.column_path, args.timestamp, args.consistency_level);
@@ -3962,7 +3969,7 @@ public class Cassandra {
         return false;
       }
 
-      public remove_counter_result getResult(I iface, remove_counter_args args) throws org.apache.thrift.TException {
+      public remove_counter_result getResult(I iface, remove_counter_args args) throws TException {
         remove_counter_result result = new remove_counter_result();
         try {
           iface.remove_counter(args.key, args.path, args.consistency_level);
@@ -3990,7 +3997,7 @@ public class Cassandra {
         return false;
       }
 
-      public batch_mutate_result getResult(I iface, batch_mutate_args args) throws org.apache.thrift.TException {
+      public batch_mutate_result getResult(I iface, batch_mutate_args args) throws TException {
         batch_mutate_result result = new batch_mutate_result();
         try {
           iface.batch_mutate(args.mutation_map, args.consistency_level);
@@ -4018,7 +4025,7 @@ public class Cassandra {
         return false;
       }
 
-      public atomic_batch_mutate_result getResult(I iface, atomic_batch_mutate_args args) throws org.apache.thrift.TException {
+      public atomic_batch_mutate_result getResult(I iface, atomic_batch_mutate_args args) throws TException {
         atomic_batch_mutate_result result = new atomic_batch_mutate_result();
         try {
           iface.atomic_batch_mutate(args.mutation_map, args.consistency_level);
@@ -4046,7 +4053,7 @@ public class Cassandra {
         return false;
       }
 
-      public truncate_result getResult(I iface, truncate_args args) throws org.apache.thrift.TException {
+      public truncate_result getResult(I iface, truncate_args args) throws TException {
         truncate_result result = new truncate_result();
         try {
           iface.truncate(args.cfname);
@@ -4074,7 +4081,7 @@ public class Cassandra {
         return false;
       }
 
-      public get_multi_slice_result getResult(I iface, get_multi_slice_args args) throws org.apache.thrift.TException {
+      public get_multi_slice_result getResult(I iface, get_multi_slice_args args) throws TException {
         get_multi_slice_result result = new get_multi_slice_result();
         try {
           result.success = iface.get_multi_slice(args.request);
@@ -4102,7 +4109,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_schema_versions_result getResult(I iface, describe_schema_versions_args args) throws org.apache.thrift.TException {
+      public describe_schema_versions_result getResult(I iface, describe_schema_versions_args args) throws TException {
         describe_schema_versions_result result = new describe_schema_versions_result();
         try {
           result.success = iface.describe_schema_versions();
@@ -4126,7 +4133,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_keyspaces_result getResult(I iface, describe_keyspaces_args args) throws org.apache.thrift.TException {
+      public describe_keyspaces_result getResult(I iface, describe_keyspaces_args args) throws TException {
         describe_keyspaces_result result = new describe_keyspaces_result();
         try {
           result.success = iface.describe_keyspaces();
@@ -4150,7 +4157,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_cluster_name_result getResult(I iface, describe_cluster_name_args args) throws org.apache.thrift.TException {
+      public describe_cluster_name_result getResult(I iface, describe_cluster_name_args args) throws TException {
         describe_cluster_name_result result = new describe_cluster_name_result();
         result.success = iface.describe_cluster_name();
         return result;
@@ -4170,7 +4177,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_version_result getResult(I iface, describe_version_args args) throws org.apache.thrift.TException {
+      public describe_version_result getResult(I iface, describe_version_args args) throws TException {
         describe_version_result result = new describe_version_result();
         result.success = iface.describe_version();
         return result;
@@ -4190,7 +4197,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_ring_result getResult(I iface, describe_ring_args args) throws org.apache.thrift.TException {
+      public describe_ring_result getResult(I iface, describe_ring_args args) throws TException {
         describe_ring_result result = new describe_ring_result();
         try {
           result.success = iface.describe_ring(args.keyspace);
@@ -4214,7 +4221,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_local_ring_result getResult(I iface, describe_local_ring_args args) throws org.apache.thrift.TException {
+      public describe_local_ring_result getResult(I iface, describe_local_ring_args args) throws TException {
         describe_local_ring_result result = new describe_local_ring_result();
         try {
           result.success = iface.describe_local_ring(args.keyspace);
@@ -4238,7 +4245,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_token_map_result getResult(I iface, describe_token_map_args args) throws org.apache.thrift.TException {
+      public describe_token_map_result getResult(I iface, describe_token_map_args args) throws TException {
         describe_token_map_result result = new describe_token_map_result();
         try {
           result.success = iface.describe_token_map();
@@ -4262,7 +4269,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_partitioner_result getResult(I iface, describe_partitioner_args args) throws org.apache.thrift.TException {
+      public describe_partitioner_result getResult(I iface, describe_partitioner_args args) throws TException {
         describe_partitioner_result result = new describe_partitioner_result();
         result.success = iface.describe_partitioner();
         return result;
@@ -4282,7 +4289,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_snitch_result getResult(I iface, describe_snitch_args args) throws org.apache.thrift.TException {
+      public describe_snitch_result getResult(I iface, describe_snitch_args args) throws TException {
         describe_snitch_result result = new describe_snitch_result();
         result.success = iface.describe_snitch();
         return result;
@@ -4302,7 +4309,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_keyspace_result getResult(I iface, describe_keyspace_args args) throws org.apache.thrift.TException {
+      public describe_keyspace_result getResult(I iface, describe_keyspace_args args) throws TException {
         describe_keyspace_result result = new describe_keyspace_result();
         try {
           result.success = iface.describe_keyspace(args.keyspace);
@@ -4328,7 +4335,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_splits_result getResult(I iface, describe_splits_args args) throws org.apache.thrift.TException {
+      public describe_splits_result getResult(I iface, describe_splits_args args) throws TException {
         describe_splits_result result = new describe_splits_result();
         try {
           result.success = iface.describe_splits(args.cfName, args.start_token, args.end_token, args.keys_per_split);
@@ -4352,7 +4359,7 @@ public class Cassandra {
         return false;
       }
 
-      public trace_next_query_result getResult(I iface, trace_next_query_args args) throws org.apache.thrift.TException {
+      public trace_next_query_result getResult(I iface, trace_next_query_args args) throws TException {
         trace_next_query_result result = new trace_next_query_result();
         result.success = iface.trace_next_query();
         return result;
@@ -4372,7 +4379,7 @@ public class Cassandra {
         return false;
       }
 
-      public describe_splits_ex_result getResult(I iface, describe_splits_ex_args args) throws org.apache.thrift.TException {
+      public describe_splits_ex_result getResult(I iface, describe_splits_ex_args args) throws TException {
         describe_splits_ex_result result = new describe_splits_ex_result();
         try {
           result.success = iface.describe_splits_ex(args.cfName, args.start_token, args.end_token, args.keys_per_split);
@@ -4396,7 +4403,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_add_column_family_result getResult(I iface, system_add_column_family_args args) throws org.apache.thrift.TException {
+      public system_add_column_family_result getResult(I iface, system_add_column_family_args args) throws TException {
         system_add_column_family_result result = new system_add_column_family_result();
         try {
           result.success = iface.system_add_column_family(args.cf_def);
@@ -4422,7 +4429,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_drop_column_family_result getResult(I iface, system_drop_column_family_args args) throws org.apache.thrift.TException {
+      public system_drop_column_family_result getResult(I iface, system_drop_column_family_args args) throws TException {
         system_drop_column_family_result result = new system_drop_column_family_result();
         try {
           result.success = iface.system_drop_column_family(args.column_family);
@@ -4448,7 +4455,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_add_keyspace_result getResult(I iface, system_add_keyspace_args args) throws org.apache.thrift.TException {
+      public system_add_keyspace_result getResult(I iface, system_add_keyspace_args args) throws TException {
         system_add_keyspace_result result = new system_add_keyspace_result();
         try {
           result.success = iface.system_add_keyspace(args.ks_def);
@@ -4474,7 +4481,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_drop_keyspace_result getResult(I iface, system_drop_keyspace_args args) throws org.apache.thrift.TException {
+      public system_drop_keyspace_result getResult(I iface, system_drop_keyspace_args args) throws TException {
         system_drop_keyspace_result result = new system_drop_keyspace_result();
         try {
           result.success = iface.system_drop_keyspace(args.keyspace);
@@ -4500,7 +4507,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_update_keyspace_result getResult(I iface, system_update_keyspace_args args) throws org.apache.thrift.TException {
+      public system_update_keyspace_result getResult(I iface, system_update_keyspace_args args) throws TException {
         system_update_keyspace_result result = new system_update_keyspace_result();
         try {
           result.success = iface.system_update_keyspace(args.ks_def);
@@ -4526,7 +4533,7 @@ public class Cassandra {
         return false;
       }
 
-      public system_update_column_family_result getResult(I iface, system_update_column_family_args args) throws org.apache.thrift.TException {
+      public system_update_column_family_result getResult(I iface, system_update_column_family_args args) throws TException {
         system_update_column_family_result result = new system_update_column_family_result();
         try {
           result.success = iface.system_update_column_family(args.cf_def);
@@ -4552,7 +4559,7 @@ public class Cassandra {
         return false;
       }
 
-      public execute_cql_query_result getResult(I iface, execute_cql_query_args args) throws org.apache.thrift.TException {
+      public execute_cql_query_result getResult(I iface, execute_cql_query_args args) throws TException {
         execute_cql_query_result result = new execute_cql_query_result();
         try {
           result.success = iface.execute_cql_query(args.query, args.compression);
@@ -4582,7 +4589,7 @@ public class Cassandra {
         return false;
       }
 
-      public execute_cql3_query_result getResult(I iface, execute_cql3_query_args args) throws org.apache.thrift.TException {
+      public execute_cql3_query_result getResult(I iface, execute_cql3_query_args args) throws TException {
         execute_cql3_query_result result = new execute_cql3_query_result();
         try {
           result.success = iface.execute_cql3_query(args.query, args.compression, args.consistency);
@@ -4612,7 +4619,7 @@ public class Cassandra {
         return false;
       }
 
-      public prepare_cql_query_result getResult(I iface, prepare_cql_query_args args) throws org.apache.thrift.TException {
+      public prepare_cql_query_result getResult(I iface, prepare_cql_query_args args) throws TException {
         prepare_cql_query_result result = new prepare_cql_query_result();
         try {
           result.success = iface.prepare_cql_query(args.query, args.compression);
@@ -4636,7 +4643,7 @@ public class Cassandra {
         return false;
       }
 
-      public prepare_cql3_query_result getResult(I iface, prepare_cql3_query_args args) throws org.apache.thrift.TException {
+      public prepare_cql3_query_result getResult(I iface, prepare_cql3_query_args args) throws TException {
         prepare_cql3_query_result result = new prepare_cql3_query_result();
         try {
           result.success = iface.prepare_cql3_query(args.query, args.compression);
@@ -4660,7 +4667,7 @@ public class Cassandra {
         return false;
       }
 
-      public execute_prepared_cql_query_result getResult(I iface, execute_prepared_cql_query_args args) throws org.apache.thrift.TException {
+      public execute_prepared_cql_query_result getResult(I iface, execute_prepared_cql_query_args args) throws TException {
         execute_prepared_cql_query_result result = new execute_prepared_cql_query_result();
         try {
           result.success = iface.execute_prepared_cql_query(args.itemId, args.values);
@@ -4690,7 +4697,7 @@ public class Cassandra {
         return false;
       }
 
-      public execute_prepared_cql3_query_result getResult(I iface, execute_prepared_cql3_query_args args) throws org.apache.thrift.TException {
+      public execute_prepared_cql3_query_result getResult(I iface, execute_prepared_cql3_query_args args) throws TException {
         execute_prepared_cql3_query_result result = new execute_prepared_cql3_query_result();
         try {
           result.success = iface.execute_prepared_cql3_query(args.itemId, args.values, args.consistency);
@@ -4720,7 +4727,7 @@ public class Cassandra {
         return false;
       }
 
-      public set_cql_version_result getResult(I iface, set_cql_version_args args) throws org.apache.thrift.TException {
+      public set_cql_version_result getResult(I iface, set_cql_version_args args) throws TException {
         set_cql_version_result result = new set_cql_version_result();
         try {
           iface.set_cql_version(args.version);
@@ -7825,11 +7832,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -7849,7 +7856,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (auth_request == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'auth_request' was not present! Struct: " + toString());
@@ -7863,7 +7870,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7871,7 +7878,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7884,7 +7891,7 @@ public class Cassandra {
 
     private static class login_argsStandardScheme extends StandardScheme<login_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, login_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, login_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -7914,7 +7921,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, login_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, login_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -7938,13 +7945,13 @@ public class Cassandra {
     private static class login_argsTupleScheme extends TupleScheme<login_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, login_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, login_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.auth_request.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, login_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, login_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.auth_request = new AuthenticationRequest();
         struct.auth_request.read(iprot);
@@ -8258,11 +8265,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -8290,7 +8297,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -8298,7 +8305,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8306,7 +8313,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8319,7 +8326,7 @@ public class Cassandra {
 
     private static class login_resultStandardScheme extends StandardScheme<login_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, login_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, login_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -8358,7 +8365,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, login_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, login_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -8387,7 +8394,7 @@ public class Cassandra {
     private static class login_resultTupleScheme extends TupleScheme<login_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, login_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, login_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetAuthnx()) {
@@ -8406,7 +8413,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, login_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, login_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -8654,11 +8661,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -8678,7 +8685,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keyspace == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keyspace' was not present! Struct: " + toString());
@@ -8689,7 +8696,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8697,7 +8704,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8710,7 +8717,7 @@ public class Cassandra {
 
     private static class set_keyspace_argsStandardScheme extends StandardScheme<set_keyspace_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, set_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, set_keyspace_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -8739,7 +8746,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, set_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, set_keyspace_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -8763,13 +8770,13 @@ public class Cassandra {
     private static class set_keyspace_argsTupleScheme extends TupleScheme<set_keyspace_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, set_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, set_keyspace_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.keyspace);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, set_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, set_keyspace_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.keyspace = iprot.readString();
         struct.setKeyspaceIsSet(true);
@@ -9008,11 +9015,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -9032,7 +9039,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -9040,7 +9047,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9048,7 +9055,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9061,7 +9068,7 @@ public class Cassandra {
 
     private static class set_keyspace_resultStandardScheme extends StandardScheme<set_keyspace_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, set_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, set_keyspace_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -9091,7 +9098,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, set_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, set_keyspace_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -9115,7 +9122,7 @@ public class Cassandra {
     private static class set_keyspace_resultTupleScheme extends TupleScheme<set_keyspace_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, set_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, set_keyspace_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -9128,7 +9135,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, set_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, set_keyspace_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -9549,11 +9556,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -9589,7 +9596,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -9609,7 +9616,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9617,7 +9624,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9630,7 +9637,7 @@ public class Cassandra {
 
     private static class get_argsStandardScheme extends StandardScheme<get_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -9676,7 +9683,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -9710,7 +9717,7 @@ public class Cassandra {
     private static class get_argsTupleScheme extends TupleScheme<get_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_path.write(oprot);
@@ -9718,7 +9725,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -10258,11 +10265,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -10314,7 +10321,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -10325,7 +10332,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10333,7 +10340,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10346,7 +10353,7 @@ public class Cassandra {
 
     private static class get_resultStandardScheme extends StandardScheme<get_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -10412,7 +10419,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -10456,7 +10463,7 @@ public class Cassandra {
     private static class get_resultTupleScheme extends TupleScheme<get_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -10493,7 +10500,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
@@ -11008,11 +11015,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -11056,7 +11063,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -11082,7 +11089,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11090,7 +11097,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11103,7 +11110,7 @@ public class Cassandra {
 
     private static class get_slice_argsStandardScheme extends StandardScheme<get_slice_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_slice_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -11158,7 +11165,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_slice_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -11197,7 +11204,7 @@ public class Cassandra {
     private static class get_slice_argsTupleScheme extends TupleScheme<get_slice_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_slice_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_parent.write(oprot);
@@ -11206,7 +11213,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_slice_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -11695,11 +11702,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -11743,7 +11750,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -11751,7 +11758,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11759,7 +11766,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11772,7 +11779,7 @@ public class Cassandra {
 
     private static class get_slice_resultStandardScheme extends StandardScheme<get_slice_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_slice_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -11839,7 +11846,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_slice_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -11885,7 +11892,7 @@ public class Cassandra {
     private static class get_slice_resultTupleScheme extends TupleScheme<get_slice_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_slice_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -11922,7 +11929,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_slice_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -12441,11 +12448,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -12489,7 +12496,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -12515,7 +12522,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12523,7 +12530,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12536,7 +12543,7 @@ public class Cassandra {
 
     private static class get_count_argsStandardScheme extends StandardScheme<get_count_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_count_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_count_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -12591,7 +12598,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_count_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_count_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -12630,7 +12637,7 @@ public class Cassandra {
     private static class get_count_argsTupleScheme extends TupleScheme<get_count_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_count_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_count_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_parent.write(oprot);
@@ -12639,7 +12646,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_count_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_count_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -13110,11 +13117,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -13154,7 +13161,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -13162,7 +13169,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13172,7 +13179,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13185,7 +13192,7 @@ public class Cassandra {
 
     private static class get_count_resultStandardScheme extends StandardScheme<get_count_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_count_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_count_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -13241,7 +13248,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_count_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_count_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -13280,7 +13287,7 @@ public class Cassandra {
     private static class get_count_resultTupleScheme extends TupleScheme<get_count_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_count_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_count_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -13311,7 +13318,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_count_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_count_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -13826,11 +13833,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -13874,7 +13881,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keys == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keys' was not present! Struct: " + toString());
@@ -13900,7 +13907,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13908,7 +13915,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13921,7 +13928,7 @@ public class Cassandra {
 
     private static class multiget_slice_argsStandardScheme extends StandardScheme<multiget_slice_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_slice_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -13986,7 +13993,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_slice_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -14032,7 +14039,7 @@ public class Cassandra {
     private static class multiget_slice_argsTupleScheme extends TupleScheme<multiget_slice_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_slice_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         {
           oprot.writeI32(struct.keys.size());
@@ -14047,7 +14054,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_slice_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         {
           org.apache.thrift.protocol.TList _list237 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
@@ -14555,11 +14562,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -14603,7 +14610,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -14611,7 +14618,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14619,7 +14626,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14632,7 +14639,7 @@ public class Cassandra {
 
     private static class multiget_slice_resultStandardScheme extends StandardScheme<multiget_slice_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_slice_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -14711,7 +14718,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_slice_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -14765,7 +14772,7 @@ public class Cassandra {
     private static class multiget_slice_resultTupleScheme extends TupleScheme<multiget_slice_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_slice_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -14809,7 +14816,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_slice_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -15345,11 +15352,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -15393,7 +15400,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keys == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keys' was not present! Struct: " + toString());
@@ -15419,7 +15426,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15427,7 +15434,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15440,7 +15447,7 @@ public class Cassandra {
 
     private static class multiget_count_argsStandardScheme extends StandardScheme<multiget_count_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_count_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_count_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -15505,7 +15512,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_count_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_count_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -15551,7 +15558,7 @@ public class Cassandra {
     private static class multiget_count_argsTupleScheme extends TupleScheme<multiget_count_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_count_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_count_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         {
           oprot.writeI32(struct.keys.size());
@@ -15566,7 +15573,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_count_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_count_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         {
           org.apache.thrift.protocol.TList _list263 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
@@ -16058,11 +16065,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -16106,7 +16113,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -16114,7 +16121,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16122,7 +16129,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16135,7 +16142,7 @@ public class Cassandra {
 
     private static class multiget_count_resultStandardScheme extends StandardScheme<multiget_count_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_count_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, multiget_count_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -16203,7 +16210,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_count_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, multiget_count_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -16250,7 +16257,7 @@ public class Cassandra {
     private static class multiget_count_resultTupleScheme extends TupleScheme<multiget_count_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_count_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, multiget_count_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -16288,7 +16295,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_count_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, multiget_count_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -16797,11 +16804,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -16845,7 +16852,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (column_parent == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'column_parent' was not present! Struct: " + toString());
@@ -16874,7 +16881,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16882,7 +16889,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16895,7 +16902,7 @@ public class Cassandra {
 
     private static class get_range_slices_argsStandardScheme extends StandardScheme<get_range_slices_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_range_slices_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_range_slices_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -16951,7 +16958,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_range_slices_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_range_slices_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -16990,7 +16997,7 @@ public class Cassandra {
     private static class get_range_slices_argsTupleScheme extends TupleScheme<get_range_slices_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_range_slices_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_range_slices_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.column_parent.write(oprot);
         struct.predicate.write(oprot);
@@ -16999,7 +17006,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_range_slices_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_range_slices_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.column_parent = new ColumnParent();
         struct.column_parent.read(iprot);
@@ -17489,11 +17496,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -17537,7 +17544,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -17545,7 +17552,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -17553,7 +17560,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -17566,7 +17573,7 @@ public class Cassandra {
 
     private static class get_range_slices_resultStandardScheme extends StandardScheme<get_range_slices_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_range_slices_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_range_slices_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -17633,7 +17640,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_range_slices_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_range_slices_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -17679,7 +17686,7 @@ public class Cassandra {
     private static class get_range_slices_resultTupleScheme extends TupleScheme<get_range_slices_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_range_slices_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_range_slices_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -17716,7 +17723,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_range_slices_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_range_slices_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -18235,11 +18242,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -18283,7 +18290,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (column_family == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'column_family' was not present! Struct: " + toString());
@@ -18306,7 +18313,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -18314,7 +18321,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -18327,7 +18334,7 @@ public class Cassandra {
 
     private static class get_paged_slice_argsStandardScheme extends StandardScheme<get_paged_slice_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_paged_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_paged_slice_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -18381,7 +18388,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_paged_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_paged_slice_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -18420,7 +18427,7 @@ public class Cassandra {
     private static class get_paged_slice_argsTupleScheme extends TupleScheme<get_paged_slice_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.column_family);
         struct.range.write(oprot);
@@ -18429,7 +18436,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.column_family = iprot.readString();
         struct.setColumn_familyIsSet(true);
@@ -18917,11 +18924,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -18965,7 +18972,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -18973,7 +18980,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -18981,7 +18988,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -18994,7 +19001,7 @@ public class Cassandra {
 
     private static class get_paged_slice_resultStandardScheme extends StandardScheme<get_paged_slice_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_paged_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_paged_slice_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -19061,7 +19068,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_paged_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_paged_slice_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -19107,7 +19114,7 @@ public class Cassandra {
     private static class get_paged_slice_resultTupleScheme extends TupleScheme<get_paged_slice_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -19144,7 +19151,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_paged_slice_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -19652,11 +19659,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -19700,7 +19707,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (column_parent == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'column_parent' was not present! Struct: " + toString());
@@ -19729,7 +19736,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -19737,7 +19744,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -19750,7 +19757,7 @@ public class Cassandra {
 
     private static class get_indexed_slices_argsStandardScheme extends StandardScheme<get_indexed_slices_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_indexed_slices_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_indexed_slices_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -19806,7 +19813,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_indexed_slices_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_indexed_slices_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -19845,7 +19852,7 @@ public class Cassandra {
     private static class get_indexed_slices_argsTupleScheme extends TupleScheme<get_indexed_slices_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.column_parent.write(oprot);
         struct.index_clause.write(oprot);
@@ -19854,7 +19861,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.column_parent = new ColumnParent();
         struct.column_parent.read(iprot);
@@ -20344,11 +20351,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -20392,7 +20399,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -20400,7 +20407,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -20408,7 +20415,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -20421,7 +20428,7 @@ public class Cassandra {
 
     private static class get_indexed_slices_resultStandardScheme extends StandardScheme<get_indexed_slices_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_indexed_slices_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_indexed_slices_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -20488,7 +20495,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_indexed_slices_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_indexed_slices_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -20534,7 +20541,7 @@ public class Cassandra {
     private static class get_indexed_slices_resultTupleScheme extends TupleScheme<get_indexed_slices_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -20571,7 +20578,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_indexed_slices_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -21090,11 +21097,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -21138,7 +21145,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -21164,7 +21171,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -21172,7 +21179,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -21185,7 +21192,7 @@ public class Cassandra {
 
     private static class insert_argsStandardScheme extends StandardScheme<insert_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -21240,7 +21247,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -21279,7 +21286,7 @@ public class Cassandra {
     private static class insert_argsTupleScheme extends TupleScheme<insert_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_parent.write(oprot);
@@ -21288,7 +21295,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, insert_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -21683,11 +21690,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -21723,7 +21730,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -21731,7 +21738,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -21739,7 +21746,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -21752,7 +21759,7 @@ public class Cassandra {
 
     private static class insert_resultStandardScheme extends StandardScheme<insert_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, insert_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -21800,7 +21807,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, insert_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -21834,7 +21841,7 @@ public class Cassandra {
     private static class insert_resultTupleScheme extends TupleScheme<insert_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -21859,7 +21866,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, insert_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -22364,11 +22371,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -22412,7 +22419,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -22438,7 +22445,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -22446,7 +22453,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -22459,7 +22466,7 @@ public class Cassandra {
 
     private static class add_argsStandardScheme extends StandardScheme<add_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, add_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, add_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -22514,7 +22521,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, add_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, add_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -22553,7 +22560,7 @@ public class Cassandra {
     private static class add_argsTupleScheme extends TupleScheme<add_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, add_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, add_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_parent.write(oprot);
@@ -22562,7 +22569,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, add_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, add_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -22957,11 +22964,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -22997,7 +23004,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -23005,7 +23012,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -23013,7 +23020,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -23026,7 +23033,7 @@ public class Cassandra {
 
     private static class add_resultStandardScheme extends StandardScheme<add_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, add_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, add_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -23074,7 +23081,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, add_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, add_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -23108,7 +23115,7 @@ public class Cassandra {
     private static class add_resultTupleScheme extends TupleScheme<add_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, add_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, add_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -23133,7 +23140,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, add_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, add_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -23845,11 +23852,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -23909,7 +23916,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -23929,7 +23936,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -23937,7 +23944,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -23950,7 +23957,7 @@ public class Cassandra {
 
     private static class cas_argsStandardScheme extends StandardScheme<cas_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, cas_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, cas_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -24041,7 +24048,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, cas_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, cas_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -24104,7 +24111,7 @@ public class Cassandra {
     private static class cas_argsTupleScheme extends TupleScheme<cas_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, cas_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, cas_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         oprot.writeString(struct.column_family);
@@ -24139,7 +24146,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, cas_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, cas_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -24635,11 +24642,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -24683,7 +24690,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -24694,7 +24701,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -24702,7 +24709,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -24715,7 +24722,7 @@ public class Cassandra {
 
     private static class cas_resultStandardScheme extends StandardScheme<cas_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, cas_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, cas_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -24772,7 +24779,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, cas_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, cas_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -24811,7 +24818,7 @@ public class Cassandra {
     private static class cas_resultTupleScheme extends TupleScheme<cas_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, cas_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, cas_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -24842,7 +24849,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, cas_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, cas_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -25354,11 +25361,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -25398,7 +25405,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -25416,7 +25423,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -25426,7 +25433,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -25439,7 +25446,7 @@ public class Cassandra {
 
     private static class remove_argsStandardScheme extends StandardScheme<remove_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -25496,7 +25503,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -25533,7 +25540,7 @@ public class Cassandra {
     private static class remove_argsTupleScheme extends TupleScheme<remove_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, remove_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, remove_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.column_path.write(oprot);
@@ -25549,7 +25556,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, remove_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, remove_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -25946,11 +25953,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -25986,7 +25993,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -25994,7 +26001,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -26002,7 +26009,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -26015,7 +26022,7 @@ public class Cassandra {
 
     private static class remove_resultStandardScheme extends StandardScheme<remove_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -26063,7 +26070,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -26097,7 +26104,7 @@ public class Cassandra {
     private static class remove_resultTupleScheme extends TupleScheme<remove_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, remove_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, remove_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -26122,7 +26129,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, remove_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, remove_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -26553,11 +26560,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -26593,7 +26600,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (key == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'key' was not present! Struct: " + toString());
@@ -26613,7 +26620,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -26621,7 +26628,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -26634,7 +26641,7 @@ public class Cassandra {
 
     private static class remove_counter_argsStandardScheme extends StandardScheme<remove_counter_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_counter_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_counter_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -26680,7 +26687,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_counter_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_counter_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -26714,7 +26721,7 @@ public class Cassandra {
     private static class remove_counter_argsTupleScheme extends TupleScheme<remove_counter_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, remove_counter_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, remove_counter_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.key);
         struct.path.write(oprot);
@@ -26722,7 +26729,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, remove_counter_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, remove_counter_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.key = iprot.readBinary();
         struct.setKeyIsSet(true);
@@ -27114,11 +27121,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -27154,7 +27161,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -27162,7 +27169,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -27170,7 +27177,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -27183,7 +27190,7 @@ public class Cassandra {
 
     private static class remove_counter_resultStandardScheme extends StandardScheme<remove_counter_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_counter_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, remove_counter_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -27231,7 +27238,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_counter_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, remove_counter_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -27265,7 +27272,7 @@ public class Cassandra {
     private static class remove_counter_resultTupleScheme extends TupleScheme<remove_counter_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, remove_counter_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, remove_counter_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -27290,7 +27297,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, remove_counter_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, remove_counter_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -27679,11 +27686,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -27711,7 +27718,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (mutation_map == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'mutation_map' was not present! Struct: " + toString());
@@ -27725,7 +27732,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -27733,7 +27740,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -27746,7 +27753,7 @@ public class Cassandra {
 
     private static class batch_mutate_argsStandardScheme extends StandardScheme<batch_mutate_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, batch_mutate_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -27818,7 +27825,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, batch_mutate_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -27870,7 +27877,7 @@ public class Cassandra {
     private static class batch_mutate_argsTupleScheme extends TupleScheme<batch_mutate_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, batch_mutate_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         {
           oprot.writeI32(struct.mutation_map.size());
@@ -27897,7 +27904,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, batch_mutate_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         {
           org.apache.thrift.protocol.TMap _map333 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
@@ -28318,11 +28325,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -28358,7 +28365,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -28366,7 +28373,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -28374,7 +28381,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -28387,7 +28394,7 @@ public class Cassandra {
 
     private static class batch_mutate_resultStandardScheme extends StandardScheme<batch_mutate_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, batch_mutate_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -28435,7 +28442,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, batch_mutate_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -28469,7 +28476,7 @@ public class Cassandra {
     private static class batch_mutate_resultTupleScheme extends TupleScheme<batch_mutate_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, batch_mutate_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -28494,7 +28501,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, batch_mutate_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -28883,11 +28890,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -28915,7 +28922,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (mutation_map == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'mutation_map' was not present! Struct: " + toString());
@@ -28929,7 +28936,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -28937,7 +28944,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -28950,7 +28957,7 @@ public class Cassandra {
 
     private static class atomic_batch_mutate_argsStandardScheme extends StandardScheme<atomic_batch_mutate_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, atomic_batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, atomic_batch_mutate_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -29022,7 +29029,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, atomic_batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, atomic_batch_mutate_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -29074,7 +29081,7 @@ public class Cassandra {
     private static class atomic_batch_mutate_argsTupleScheme extends TupleScheme<atomic_batch_mutate_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         {
           oprot.writeI32(struct.mutation_map.size());
@@ -29101,7 +29108,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         {
           org.apache.thrift.protocol.TMap _map361 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.MAP, iprot.readI32());
@@ -29522,11 +29529,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -29562,7 +29569,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -29570,7 +29577,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -29578,7 +29585,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -29591,7 +29598,7 @@ public class Cassandra {
 
     private static class atomic_batch_mutate_resultStandardScheme extends StandardScheme<atomic_batch_mutate_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, atomic_batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, atomic_batch_mutate_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -29639,7 +29646,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, atomic_batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, atomic_batch_mutate_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -29673,7 +29680,7 @@ public class Cassandra {
     private static class atomic_batch_mutate_resultTupleScheme extends TupleScheme<atomic_batch_mutate_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -29698,7 +29705,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, atomic_batch_mutate_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -29951,11 +29958,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -29975,7 +29982,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (cfname == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'cfname' was not present! Struct: " + toString());
@@ -29986,7 +29993,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -29994,7 +30001,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -30007,7 +30014,7 @@ public class Cassandra {
 
     private static class truncate_argsStandardScheme extends StandardScheme<truncate_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, truncate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, truncate_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -30036,7 +30043,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, truncate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, truncate_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -30060,13 +30067,13 @@ public class Cassandra {
     private static class truncate_argsTupleScheme extends TupleScheme<truncate_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, truncate_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, truncate_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.cfname);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, truncate_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, truncate_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.cfname = iprot.readString();
         struct.setCfnameIsSet(true);
@@ -30453,11 +30460,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -30493,7 +30500,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -30501,7 +30508,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -30509,7 +30516,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -30522,7 +30529,7 @@ public class Cassandra {
 
     private static class truncate_resultStandardScheme extends StandardScheme<truncate_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, truncate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, truncate_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -30570,7 +30577,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, truncate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, truncate_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -30604,7 +30611,7 @@ public class Cassandra {
     private static class truncate_resultTupleScheme extends TupleScheme<truncate_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, truncate_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, truncate_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -30629,7 +30636,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, truncate_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, truncate_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -30882,11 +30889,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -30906,7 +30913,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (request == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'request' was not present! Struct: " + toString());
@@ -30920,7 +30927,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -30928,7 +30935,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -30941,7 +30948,7 @@ public class Cassandra {
 
     private static class get_multi_slice_argsStandardScheme extends StandardScheme<get_multi_slice_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_multi_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_multi_slice_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -30971,7 +30978,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_multi_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_multi_slice_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -30995,13 +31002,13 @@ public class Cassandra {
     private static class get_multi_slice_argsTupleScheme extends TupleScheme<get_multi_slice_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.request.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.request = new MultiSliceRequest();
         struct.request.read(iprot);
@@ -31483,11 +31490,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -31531,7 +31538,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -31539,7 +31546,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -31547,7 +31554,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -31560,7 +31567,7 @@ public class Cassandra {
 
     private static class get_multi_slice_resultStandardScheme extends StandardScheme<get_multi_slice_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, get_multi_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, get_multi_slice_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -31627,7 +31634,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, get_multi_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, get_multi_slice_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -31673,7 +31680,7 @@ public class Cassandra {
     private static class get_multi_slice_resultTupleScheme extends TupleScheme<get_multi_slice_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -31710,7 +31717,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, get_multi_slice_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -31897,11 +31904,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -31914,7 +31921,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -31922,7 +31929,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -31930,7 +31937,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -31943,7 +31950,7 @@ public class Cassandra {
 
     private static class describe_schema_versions_argsStandardScheme extends StandardScheme<describe_schema_versions_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_schema_versions_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_schema_versions_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -31964,7 +31971,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_schema_versions_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_schema_versions_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -31983,12 +31990,12 @@ public class Cassandra {
     private static class describe_schema_versions_argsTupleScheme extends TupleScheme<describe_schema_versions_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -32325,11 +32332,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -32357,7 +32364,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -32365,7 +32372,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -32373,7 +32380,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -32386,7 +32393,7 @@ public class Cassandra {
 
     private static class describe_schema_versions_resultStandardScheme extends StandardScheme<describe_schema_versions_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_schema_versions_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_schema_versions_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -32446,7 +32453,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_schema_versions_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_schema_versions_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -32490,7 +32497,7 @@ public class Cassandra {
     private static class describe_schema_versions_resultTupleScheme extends TupleScheme<describe_schema_versions_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -32522,7 +32529,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_schema_versions_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -32709,11 +32716,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -32726,7 +32733,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -32734,7 +32741,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -32742,7 +32749,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -32755,7 +32762,7 @@ public class Cassandra {
 
     private static class describe_keyspaces_argsStandardScheme extends StandardScheme<describe_keyspaces_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspaces_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspaces_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -32776,7 +32783,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspaces_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspaces_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -32795,12 +32802,12 @@ public class Cassandra {
     private static class describe_keyspaces_argsTupleScheme extends TupleScheme<describe_keyspaces_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -33131,11 +33138,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -33163,7 +33170,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -33171,7 +33178,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33179,7 +33186,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33192,7 +33199,7 @@ public class Cassandra {
 
     private static class describe_keyspaces_resultStandardScheme extends StandardScheme<describe_keyspaces_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspaces_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspaces_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -33241,7 +33248,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspaces_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspaces_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -33277,7 +33284,7 @@ public class Cassandra {
     private static class describe_keyspaces_resultTupleScheme extends TupleScheme<describe_keyspaces_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -33302,7 +33309,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspaces_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -33479,11 +33486,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -33496,7 +33503,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -33504,7 +33511,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33512,7 +33519,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33525,7 +33532,7 @@ public class Cassandra {
 
     private static class describe_cluster_name_argsStandardScheme extends StandardScheme<describe_cluster_name_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_cluster_name_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_cluster_name_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -33546,7 +33553,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_cluster_name_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_cluster_name_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -33565,12 +33572,12 @@ public class Cassandra {
     private static class describe_cluster_name_argsTupleScheme extends TupleScheme<describe_cluster_name_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -33807,11 +33814,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -33831,7 +33838,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -33839,7 +33846,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33847,7 +33854,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -33860,7 +33867,7 @@ public class Cassandra {
 
     private static class describe_cluster_name_resultStandardScheme extends StandardScheme<describe_cluster_name_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_cluster_name_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_cluster_name_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -33889,7 +33896,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_cluster_name_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_cluster_name_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -33913,7 +33920,7 @@ public class Cassandra {
     private static class describe_cluster_name_resultTupleScheme extends TupleScheme<describe_cluster_name_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -33926,7 +33933,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_cluster_name_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -34088,11 +34095,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -34105,7 +34112,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -34113,7 +34120,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34121,7 +34128,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34134,7 +34141,7 @@ public class Cassandra {
 
     private static class describe_version_argsStandardScheme extends StandardScheme<describe_version_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_version_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_version_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -34155,7 +34162,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_version_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_version_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -34174,12 +34181,12 @@ public class Cassandra {
     private static class describe_version_argsTupleScheme extends TupleScheme<describe_version_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_version_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_version_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_version_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_version_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -34416,11 +34423,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -34440,7 +34447,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -34448,7 +34455,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34456,7 +34463,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34469,7 +34476,7 @@ public class Cassandra {
 
     private static class describe_version_resultStandardScheme extends StandardScheme<describe_version_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_version_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_version_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -34498,7 +34505,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_version_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_version_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -34522,7 +34529,7 @@ public class Cassandra {
     private static class describe_version_resultTupleScheme extends TupleScheme<describe_version_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_version_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_version_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -34535,7 +34542,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_version_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_version_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -34777,11 +34784,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -34801,7 +34808,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keyspace == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keyspace' was not present! Struct: " + toString());
@@ -34812,7 +34819,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34820,7 +34827,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -34833,7 +34840,7 @@ public class Cassandra {
 
     private static class describe_ring_argsStandardScheme extends StandardScheme<describe_ring_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_ring_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_ring_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -34862,7 +34869,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_ring_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_ring_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -34886,13 +34893,13 @@ public class Cassandra {
     private static class describe_ring_argsTupleScheme extends TupleScheme<describe_ring_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_ring_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_ring_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.keyspace);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_ring_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_ring_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.keyspace = iprot.readString();
         struct.setKeyspaceIsSet(true);
@@ -35225,11 +35232,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -35257,7 +35264,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -35265,7 +35272,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -35273,7 +35280,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -35286,7 +35293,7 @@ public class Cassandra {
 
     private static class describe_ring_resultStandardScheme extends StandardScheme<describe_ring_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_ring_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_ring_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -35335,7 +35342,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_ring_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_ring_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -35371,7 +35378,7 @@ public class Cassandra {
     private static class describe_ring_resultTupleScheme extends TupleScheme<describe_ring_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_ring_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_ring_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -35396,7 +35403,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_ring_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_ring_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -35653,11 +35660,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -35677,7 +35684,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keyspace == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keyspace' was not present! Struct: " + toString());
@@ -35688,7 +35695,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -35696,7 +35703,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -35709,7 +35716,7 @@ public class Cassandra {
 
     private static class describe_local_ring_argsStandardScheme extends StandardScheme<describe_local_ring_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_local_ring_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_local_ring_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -35738,7 +35745,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_local_ring_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_local_ring_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -35762,13 +35769,13 @@ public class Cassandra {
     private static class describe_local_ring_argsTupleScheme extends TupleScheme<describe_local_ring_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.keyspace);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.keyspace = iprot.readString();
         struct.setKeyspaceIsSet(true);
@@ -36101,11 +36108,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -36133,7 +36140,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -36141,7 +36148,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36149,7 +36156,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36162,7 +36169,7 @@ public class Cassandra {
 
     private static class describe_local_ring_resultStandardScheme extends StandardScheme<describe_local_ring_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_local_ring_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_local_ring_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -36211,7 +36218,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_local_ring_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_local_ring_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -36247,7 +36254,7 @@ public class Cassandra {
     private static class describe_local_ring_resultTupleScheme extends TupleScheme<describe_local_ring_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -36272,7 +36279,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_local_ring_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -36449,11 +36456,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -36466,7 +36473,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -36474,7 +36481,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36482,7 +36489,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36495,7 +36502,7 @@ public class Cassandra {
 
     private static class describe_token_map_argsStandardScheme extends StandardScheme<describe_token_map_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_token_map_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_token_map_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -36516,7 +36523,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_token_map_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_token_map_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -36535,12 +36542,12 @@ public class Cassandra {
     private static class describe_token_map_argsTupleScheme extends TupleScheme<describe_token_map_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_token_map_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_token_map_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_token_map_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_token_map_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -36865,11 +36872,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -36897,7 +36904,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -36905,7 +36912,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36913,7 +36920,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -36926,7 +36933,7 @@ public class Cassandra {
 
     private static class describe_token_map_resultStandardScheme extends StandardScheme<describe_token_map_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_token_map_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_token_map_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -36976,7 +36983,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_token_map_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_token_map_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -37013,7 +37020,7 @@ public class Cassandra {
     private static class describe_token_map_resultTupleScheme extends TupleScheme<describe_token_map_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_token_map_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_token_map_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -37039,7 +37046,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_token_map_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_token_map_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -37217,11 +37224,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -37234,7 +37241,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -37242,7 +37249,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37250,7 +37257,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37263,7 +37270,7 @@ public class Cassandra {
 
     private static class describe_partitioner_argsStandardScheme extends StandardScheme<describe_partitioner_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_partitioner_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_partitioner_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -37284,7 +37291,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_partitioner_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_partitioner_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -37303,12 +37310,12 @@ public class Cassandra {
     private static class describe_partitioner_argsTupleScheme extends TupleScheme<describe_partitioner_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -37545,11 +37552,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -37569,7 +37576,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -37577,7 +37584,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37585,7 +37592,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37598,7 +37605,7 @@ public class Cassandra {
 
     private static class describe_partitioner_resultStandardScheme extends StandardScheme<describe_partitioner_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_partitioner_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_partitioner_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -37627,7 +37634,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_partitioner_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_partitioner_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -37651,7 +37658,7 @@ public class Cassandra {
     private static class describe_partitioner_resultTupleScheme extends TupleScheme<describe_partitioner_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -37664,7 +37671,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_partitioner_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -37826,11 +37833,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -37843,7 +37850,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -37851,7 +37858,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37859,7 +37866,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -37872,7 +37879,7 @@ public class Cassandra {
 
     private static class describe_snitch_argsStandardScheme extends StandardScheme<describe_snitch_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_snitch_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_snitch_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -37893,7 +37900,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_snitch_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_snitch_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -37912,12 +37919,12 @@ public class Cassandra {
     private static class describe_snitch_argsTupleScheme extends TupleScheme<describe_snitch_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_snitch_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_snitch_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_snitch_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_snitch_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -38154,11 +38161,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -38178,7 +38185,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -38186,7 +38193,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -38194,7 +38201,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -38207,7 +38214,7 @@ public class Cassandra {
 
     private static class describe_snitch_resultStandardScheme extends StandardScheme<describe_snitch_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_snitch_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_snitch_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -38236,7 +38243,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_snitch_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_snitch_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -38260,7 +38267,7 @@ public class Cassandra {
     private static class describe_snitch_resultTupleScheme extends TupleScheme<describe_snitch_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_snitch_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_snitch_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -38273,7 +38280,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_snitch_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_snitch_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -38515,11 +38522,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -38539,7 +38546,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keyspace == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keyspace' was not present! Struct: " + toString());
@@ -38550,7 +38557,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -38558,7 +38565,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -38571,7 +38578,7 @@ public class Cassandra {
 
     private static class describe_keyspace_argsStandardScheme extends StandardScheme<describe_keyspace_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspace_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -38600,7 +38607,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspace_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -38624,13 +38631,13 @@ public class Cassandra {
     private static class describe_keyspace_argsTupleScheme extends TupleScheme<describe_keyspace_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.keyspace);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.keyspace = iprot.readString();
         struct.setKeyspaceIsSet(true);
@@ -39017,11 +39024,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -39057,7 +39064,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -39068,7 +39075,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -39076,7 +39083,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -39089,7 +39096,7 @@ public class Cassandra {
 
     private static class describe_keyspace_resultStandardScheme extends StandardScheme<describe_keyspace_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_keyspace_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -39137,7 +39144,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_keyspace_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -39171,7 +39178,7 @@ public class Cassandra {
     private static class describe_keyspace_resultTupleScheme extends TupleScheme<describe_keyspace_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -39196,7 +39203,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_keyspace_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -39673,11 +39680,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -39717,7 +39724,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (cfName == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'cfName' was not present! Struct: " + toString());
@@ -39735,7 +39742,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -39745,7 +39752,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -39758,7 +39765,7 @@ public class Cassandra {
 
     private static class describe_splits_argsStandardScheme extends StandardScheme<describe_splits_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -39814,7 +39821,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -39851,7 +39858,7 @@ public class Cassandra {
     private static class describe_splits_argsTupleScheme extends TupleScheme<describe_splits_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.cfName);
         oprot.writeString(struct.start_token);
@@ -39860,7 +39867,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.cfName = iprot.readString();
         struct.setCfNameIsSet(true);
@@ -40196,11 +40203,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -40228,7 +40235,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -40236,7 +40243,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40244,7 +40251,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40257,7 +40264,7 @@ public class Cassandra {
 
     private static class describe_splits_resultStandardScheme extends StandardScheme<describe_splits_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -40305,7 +40312,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -40341,7 +40348,7 @@ public class Cassandra {
     private static class describe_splits_resultTupleScheme extends TupleScheme<describe_splits_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -40366,7 +40373,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -40542,11 +40549,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -40559,7 +40566,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -40567,7 +40574,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40575,7 +40582,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40588,7 +40595,7 @@ public class Cassandra {
 
     private static class trace_next_query_argsStandardScheme extends StandardScheme<trace_next_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, trace_next_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, trace_next_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -40609,7 +40616,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, trace_next_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, trace_next_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -40628,12 +40635,12 @@ public class Cassandra {
     private static class trace_next_query_argsTupleScheme extends TupleScheme<trace_next_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, trace_next_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, trace_next_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, trace_next_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, trace_next_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
       }
     }
@@ -40881,11 +40888,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -40905,7 +40912,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -40913,7 +40920,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40921,7 +40928,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -40934,7 +40941,7 @@ public class Cassandra {
 
     private static class trace_next_query_resultStandardScheme extends StandardScheme<trace_next_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, trace_next_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, trace_next_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -40963,7 +40970,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, trace_next_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, trace_next_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -40987,7 +40994,7 @@ public class Cassandra {
     private static class trace_next_query_resultTupleScheme extends TupleScheme<trace_next_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, trace_next_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, trace_next_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -41000,7 +41007,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, trace_next_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, trace_next_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -41466,11 +41473,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -41510,7 +41517,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (cfName == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'cfName' was not present! Struct: " + toString());
@@ -41528,7 +41535,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -41538,7 +41545,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -41551,7 +41558,7 @@ public class Cassandra {
 
     private static class describe_splits_ex_argsStandardScheme extends StandardScheme<describe_splits_ex_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_ex_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_ex_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -41607,7 +41614,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_ex_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_ex_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -41644,7 +41651,7 @@ public class Cassandra {
     private static class describe_splits_ex_argsTupleScheme extends TupleScheme<describe_splits_ex_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.cfName);
         oprot.writeString(struct.start_token);
@@ -41653,7 +41660,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.cfName = iprot.readString();
         struct.setCfNameIsSet(true);
@@ -41992,11 +41999,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -42024,7 +42031,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -42032,7 +42039,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42040,7 +42047,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42053,7 +42060,7 @@ public class Cassandra {
 
     private static class describe_splits_ex_resultStandardScheme extends StandardScheme<describe_splits_ex_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_ex_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, describe_splits_ex_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -42102,7 +42109,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_ex_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, describe_splits_ex_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -42138,7 +42145,7 @@ public class Cassandra {
     private static class describe_splits_ex_resultTupleScheme extends TupleScheme<describe_splits_ex_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -42163,7 +42170,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, describe_splits_ex_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -42420,11 +42427,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -42444,7 +42451,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (cf_def == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'cf_def' was not present! Struct: " + toString());
@@ -42458,7 +42465,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42466,7 +42473,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42479,7 +42486,7 @@ public class Cassandra {
 
     private static class system_add_column_family_argsStandardScheme extends StandardScheme<system_add_column_family_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_column_family_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -42509,7 +42516,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_column_family_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -42533,13 +42540,13 @@ public class Cassandra {
     private static class system_add_column_family_argsTupleScheme extends TupleScheme<system_add_column_family_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.cf_def.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.cf_def = new CfDef();
         struct.cf_def.read(iprot);
@@ -42927,11 +42934,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -42967,7 +42974,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -42975,7 +42982,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42983,7 +42990,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -42996,7 +43003,7 @@ public class Cassandra {
 
     private static class system_add_column_family_resultStandardScheme extends StandardScheme<system_add_column_family_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_column_family_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -43043,7 +43050,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_column_family_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -43077,7 +43084,7 @@ public class Cassandra {
     private static class system_add_column_family_resultTupleScheme extends TupleScheme<system_add_column_family_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -43102,7 +43109,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_column_family_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -43354,11 +43361,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -43378,7 +43385,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (column_family == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'column_family' was not present! Struct: " + toString());
@@ -43389,7 +43396,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -43397,7 +43404,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -43410,7 +43417,7 @@ public class Cassandra {
 
     private static class system_drop_column_family_argsStandardScheme extends StandardScheme<system_drop_column_family_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_column_family_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -43439,7 +43446,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_column_family_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -43463,13 +43470,13 @@ public class Cassandra {
     private static class system_drop_column_family_argsTupleScheme extends TupleScheme<system_drop_column_family_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.column_family);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.column_family = iprot.readString();
         struct.setColumn_familyIsSet(true);
@@ -43856,11 +43863,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -43896,7 +43903,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -43904,7 +43911,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -43912,7 +43919,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -43925,7 +43932,7 @@ public class Cassandra {
 
     private static class system_drop_column_family_resultStandardScheme extends StandardScheme<system_drop_column_family_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_column_family_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -43972,7 +43979,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_column_family_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44006,7 +44013,7 @@ public class Cassandra {
     private static class system_drop_column_family_resultTupleScheme extends TupleScheme<system_drop_column_family_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -44031,7 +44038,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_column_family_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -44283,11 +44290,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -44307,7 +44314,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (ks_def == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'ks_def' was not present! Struct: " + toString());
@@ -44321,7 +44328,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -44329,7 +44336,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -44342,7 +44349,7 @@ public class Cassandra {
 
     private static class system_add_keyspace_argsStandardScheme extends StandardScheme<system_add_keyspace_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_keyspace_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -44372,7 +44379,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_keyspace_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44396,13 +44403,13 @@ public class Cassandra {
     private static class system_add_keyspace_argsTupleScheme extends TupleScheme<system_add_keyspace_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.ks_def.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.ks_def = new KsDef();
         struct.ks_def.read(iprot);
@@ -44790,11 +44797,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -44830,7 +44837,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -44838,7 +44845,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -44846,7 +44853,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -44859,7 +44866,7 @@ public class Cassandra {
 
     private static class system_add_keyspace_resultStandardScheme extends StandardScheme<system_add_keyspace_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_add_keyspace_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -44906,7 +44913,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_add_keyspace_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -44940,7 +44947,7 @@ public class Cassandra {
     private static class system_add_keyspace_resultTupleScheme extends TupleScheme<system_add_keyspace_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -44965,7 +44972,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_add_keyspace_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -45217,11 +45224,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -45241,7 +45248,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (keyspace == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'keyspace' was not present! Struct: " + toString());
@@ -45252,7 +45259,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -45260,7 +45267,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -45273,7 +45280,7 @@ public class Cassandra {
 
     private static class system_drop_keyspace_argsStandardScheme extends StandardScheme<system_drop_keyspace_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_keyspace_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -45302,7 +45309,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_keyspace_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -45326,13 +45333,13 @@ public class Cassandra {
     private static class system_drop_keyspace_argsTupleScheme extends TupleScheme<system_drop_keyspace_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.keyspace);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.keyspace = iprot.readString();
         struct.setKeyspaceIsSet(true);
@@ -45719,11 +45726,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -45759,7 +45766,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -45767,7 +45774,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -45775,7 +45782,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -45788,7 +45795,7 @@ public class Cassandra {
 
     private static class system_drop_keyspace_resultStandardScheme extends StandardScheme<system_drop_keyspace_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_drop_keyspace_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -45835,7 +45842,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_drop_keyspace_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -45869,7 +45876,7 @@ public class Cassandra {
     private static class system_drop_keyspace_resultTupleScheme extends TupleScheme<system_drop_keyspace_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -45894,7 +45901,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_drop_keyspace_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -46146,11 +46153,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -46170,7 +46177,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (ks_def == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'ks_def' was not present! Struct: " + toString());
@@ -46184,7 +46191,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -46192,7 +46199,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -46205,7 +46212,7 @@ public class Cassandra {
 
     private static class system_update_keyspace_argsStandardScheme extends StandardScheme<system_update_keyspace_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_keyspace_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -46235,7 +46242,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_keyspace_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -46259,13 +46266,13 @@ public class Cassandra {
     private static class system_update_keyspace_argsTupleScheme extends TupleScheme<system_update_keyspace_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.ks_def.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.ks_def = new KsDef();
         struct.ks_def.read(iprot);
@@ -46653,11 +46660,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -46693,7 +46700,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -46701,7 +46708,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -46709,7 +46716,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -46722,7 +46729,7 @@ public class Cassandra {
 
     private static class system_update_keyspace_resultStandardScheme extends StandardScheme<system_update_keyspace_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_keyspace_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -46769,7 +46776,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_keyspace_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -46803,7 +46810,7 @@ public class Cassandra {
     private static class system_update_keyspace_resultTupleScheme extends TupleScheme<system_update_keyspace_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -46828,7 +46835,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_keyspace_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -47080,11 +47087,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -47104,7 +47111,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (cf_def == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'cf_def' was not present! Struct: " + toString());
@@ -47118,7 +47125,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -47126,7 +47133,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -47139,7 +47146,7 @@ public class Cassandra {
 
     private static class system_update_column_family_argsStandardScheme extends StandardScheme<system_update_column_family_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_column_family_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -47169,7 +47176,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_column_family_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -47193,13 +47200,13 @@ public class Cassandra {
     private static class system_update_column_family_argsTupleScheme extends TupleScheme<system_update_column_family_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         struct.cf_def.write(oprot);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.cf_def = new CfDef();
         struct.cf_def.read(iprot);
@@ -47587,11 +47594,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -47627,7 +47634,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -47635,7 +47642,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -47643,7 +47650,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -47656,7 +47663,7 @@ public class Cassandra {
 
     private static class system_update_column_family_resultStandardScheme extends StandardScheme<system_update_column_family_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, system_update_column_family_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -47703,7 +47710,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, system_update_column_family_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -47737,7 +47744,7 @@ public class Cassandra {
     private static class system_update_column_family_resultTupleScheme extends TupleScheme<system_update_column_family_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -47762,7 +47769,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, system_update_column_family_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -48115,11 +48122,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -48147,7 +48154,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (query == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'query' was not present! Struct: " + toString());
@@ -48161,7 +48168,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -48169,7 +48176,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -48182,7 +48189,7 @@ public class Cassandra {
 
     private static class execute_cql_query_argsStandardScheme extends StandardScheme<execute_cql_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -48219,7 +48226,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -48248,14 +48255,14 @@ public class Cassandra {
     private static class execute_cql_query_argsTupleScheme extends TupleScheme<execute_cql_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.query);
         oprot.writeI32(struct.compression.getValue());
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.query = iprot.readBinary();
         struct.setQueryIsSet(true);
@@ -48792,11 +48799,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -48848,7 +48855,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -48859,7 +48866,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -48867,7 +48874,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -48880,7 +48887,7 @@ public class Cassandra {
 
     private static class execute_cql_query_resultStandardScheme extends StandardScheme<execute_cql_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -48946,7 +48953,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -48990,7 +48997,7 @@ public class Cassandra {
     private static class execute_cql_query_resultTupleScheme extends TupleScheme<execute_cql_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -49027,7 +49034,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
@@ -49481,11 +49488,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -49521,7 +49528,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (query == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'query' was not present! Struct: " + toString());
@@ -49538,7 +49545,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -49546,7 +49553,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -49559,7 +49566,7 @@ public class Cassandra {
 
     private static class execute_cql3_query_argsStandardScheme extends StandardScheme<execute_cql3_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql3_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -49604,7 +49611,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql3_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -49638,7 +49645,7 @@ public class Cassandra {
     private static class execute_cql3_query_argsTupleScheme extends TupleScheme<execute_cql3_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.query);
         oprot.writeI32(struct.compression.getValue());
@@ -49646,7 +49653,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.query = iprot.readBinary();
         struct.setQueryIsSet(true);
@@ -50185,11 +50192,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -50241,7 +50248,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -50252,7 +50259,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -50260,7 +50267,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -50273,7 +50280,7 @@ public class Cassandra {
 
     private static class execute_cql3_query_resultStandardScheme extends StandardScheme<execute_cql3_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_cql3_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -50339,7 +50346,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_cql3_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -50383,7 +50390,7 @@ public class Cassandra {
     private static class execute_cql3_query_resultTupleScheme extends TupleScheme<execute_cql3_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -50420,7 +50427,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_cql3_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
@@ -50784,11 +50791,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -50816,7 +50823,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (query == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'query' was not present! Struct: " + toString());
@@ -50830,7 +50837,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -50838,7 +50845,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -50851,7 +50858,7 @@ public class Cassandra {
 
     private static class prepare_cql_query_argsStandardScheme extends StandardScheme<prepare_cql_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -50888,7 +50895,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -50917,14 +50924,14 @@ public class Cassandra {
     private static class prepare_cql_query_argsTupleScheme extends TupleScheme<prepare_cql_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.query);
         oprot.writeI32(struct.compression.getValue());
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.query = iprot.readBinary();
         struct.setQueryIsSet(true);
@@ -51239,11 +51246,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -51271,7 +51278,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -51282,7 +51289,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -51290,7 +51297,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -51303,7 +51310,7 @@ public class Cassandra {
 
     private static class prepare_cql_query_resultStandardScheme extends StandardScheme<prepare_cql_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -51342,7 +51349,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -51371,7 +51378,7 @@ public class Cassandra {
     private static class prepare_cql_query_resultTupleScheme extends TupleScheme<prepare_cql_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -51390,7 +51397,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -51739,11 +51746,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -51771,7 +51778,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (query == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'query' was not present! Struct: " + toString());
@@ -51785,7 +51792,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -51793,7 +51800,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -51806,7 +51813,7 @@ public class Cassandra {
 
     private static class prepare_cql3_query_argsStandardScheme extends StandardScheme<prepare_cql3_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql3_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -51843,7 +51850,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql3_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -51872,14 +51879,14 @@ public class Cassandra {
     private static class prepare_cql3_query_argsTupleScheme extends TupleScheme<prepare_cql3_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeBinary(struct.query);
         oprot.writeI32(struct.compression.getValue());
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.query = iprot.readBinary();
         struct.setQueryIsSet(true);
@@ -52194,11 +52201,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -52226,7 +52233,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -52237,7 +52244,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -52245,7 +52252,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -52258,7 +52265,7 @@ public class Cassandra {
 
     private static class prepare_cql3_query_resultStandardScheme extends StandardScheme<prepare_cql3_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, prepare_cql3_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -52297,7 +52304,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, prepare_cql3_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -52326,7 +52333,7 @@ public class Cassandra {
     private static class prepare_cql3_query_resultTupleScheme extends TupleScheme<prepare_cql3_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -52345,7 +52352,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, prepare_cql3_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -52686,11 +52693,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -52714,7 +52721,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // alas, we cannot check 'itemId' because it's a primitive and you chose the non-beans generator.
       if (values == null) {
@@ -52726,7 +52733,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -52736,7 +52743,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -52749,7 +52756,7 @@ public class Cassandra {
 
     private static class execute_prepared_cql_query_argsStandardScheme extends StandardScheme<execute_prepared_cql_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -52799,7 +52806,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -52833,7 +52840,7 @@ public class Cassandra {
     private static class execute_prepared_cql_query_argsTupleScheme extends TupleScheme<execute_prepared_cql_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeI32(struct.itemId);
         {
@@ -52846,7 +52853,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.itemId = iprot.readI32();
         struct.setItemIdIsSet(true);
@@ -53392,11 +53399,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -53448,7 +53455,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -53459,7 +53466,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -53467,7 +53474,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -53480,7 +53487,7 @@ public class Cassandra {
 
     private static class execute_prepared_cql_query_resultStandardScheme extends StandardScheme<execute_prepared_cql_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -53546,7 +53553,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -53590,7 +53597,7 @@ public class Cassandra {
     private static class execute_prepared_cql_query_resultTupleScheme extends TupleScheme<execute_prepared_cql_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -53627,7 +53634,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
@@ -54073,11 +54080,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -54109,7 +54116,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // alas, we cannot check 'itemId' because it's a primitive and you chose the non-beans generator.
       if (values == null) {
@@ -54124,7 +54131,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -54134,7 +54141,7 @@ public class Cassandra {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -54147,7 +54154,7 @@ public class Cassandra {
 
     private static class execute_prepared_cql3_query_argsStandardScheme extends StandardScheme<execute_prepared_cql3_query_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql3_query_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -54205,7 +54212,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql3_query_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -54244,7 +54251,7 @@ public class Cassandra {
     private static class execute_prepared_cql3_query_argsTupleScheme extends TupleScheme<execute_prepared_cql3_query_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeI32(struct.itemId);
         {
@@ -54258,7 +54265,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.itemId = iprot.readI32();
         struct.setItemIdIsSet(true);
@@ -54806,11 +54813,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -54862,7 +54869,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -54873,7 +54880,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -54881,7 +54888,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -54894,7 +54901,7 @@ public class Cassandra {
 
     private static class execute_prepared_cql3_query_resultStandardScheme extends StandardScheme<execute_prepared_cql3_query_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, execute_prepared_cql3_query_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -54960,7 +54967,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, execute_prepared_cql3_query_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -55004,7 +55011,7 @@ public class Cassandra {
     private static class execute_prepared_cql3_query_resultTupleScheme extends TupleScheme<execute_prepared_cql3_query_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -55041,7 +55048,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, execute_prepared_cql3_query_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
@@ -55304,11 +55311,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -55328,7 +55335,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       if (version == null) {
         throw new org.apache.thrift.protocol.TProtocolException("Required field 'version' was not present! Struct: " + toString());
@@ -55339,7 +55346,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -55347,7 +55354,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -55360,7 +55367,7 @@ public class Cassandra {
 
     private static class set_cql_version_argsStandardScheme extends StandardScheme<set_cql_version_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, set_cql_version_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, set_cql_version_args struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -55389,7 +55396,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, set_cql_version_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, set_cql_version_args struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -55413,13 +55420,13 @@ public class Cassandra {
     private static class set_cql_version_argsTupleScheme extends TupleScheme<set_cql_version_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, set_cql_version_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, set_cql_version_args struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         oprot.writeString(struct.version);
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, set_cql_version_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, set_cql_version_args struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         struct.version = iprot.readString();
         struct.setVersionIsSet(true);
@@ -55658,11 +55665,11 @@ public class Cassandra {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -55682,7 +55689,7 @@ public class Cassandra {
       return sb.toString();
     }
 
-    public void validate() throws org.apache.thrift.TException {
+    public void validate() throws TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -55690,7 +55697,7 @@ public class Cassandra {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -55698,7 +55705,7 @@ public class Cassandra {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
+      } catch (TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -55711,7 +55718,7 @@ public class Cassandra {
 
     private static class set_cql_version_resultStandardScheme extends StandardScheme<set_cql_version_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, set_cql_version_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, set_cql_version_result struct) throws TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -55741,7 +55748,7 @@ public class Cassandra {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, set_cql_version_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, set_cql_version_result struct) throws TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -55765,7 +55772,7 @@ public class Cassandra {
     private static class set_cql_version_resultTupleScheme extends TupleScheme<set_cql_version_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, set_cql_version_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, set_cql_version_result struct) throws TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetIre()) {
@@ -55778,7 +55785,7 @@ public class Cassandra {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, set_cql_version_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, set_cql_version_result struct) throws TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

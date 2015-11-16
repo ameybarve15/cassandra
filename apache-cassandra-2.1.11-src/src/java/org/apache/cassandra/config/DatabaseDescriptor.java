@@ -1,86 +1,7 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.config;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.primitives.Longs;
-
-import org.apache.cassandra.thrift.ThriftServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.cassandra.auth.AllowAllAuthenticator;
-import org.apache.cassandra.auth.AllowAllAuthorizer;
-import org.apache.cassandra.auth.AllowAllInternodeAuthenticator;
-import org.apache.cassandra.auth.IAuthenticator;
-import org.apache.cassandra.auth.IAuthorizer;
-import org.apache.cassandra.auth.IInternodeAuthenticator;
-import org.apache.cassandra.config.Config.RequestSchedulerId;
-import org.apache.cassandra.config.EncryptionOptions.ClientEncryptionOptions;
-import org.apache.cassandra.config.EncryptionOptions.ServerEncryptionOptions;
-import org.apache.cassandra.db.ColumnFamilyStore;
-import org.apache.cassandra.db.DefsTables;
-import org.apache.cassandra.db.SystemKeyspace;
-import org.apache.cassandra.dht.IPartitioner;
-import org.apache.cassandra.exceptions.ConfigurationException;
-import org.apache.cassandra.io.FSWriteError;
-import org.apache.cassandra.io.util.FileUtils;
-import org.apache.cassandra.io.util.IAllocator;
-import org.apache.cassandra.locator.DynamicEndpointSnitch;
-import org.apache.cassandra.locator.EndpointSnitchInfo;
-import org.apache.cassandra.locator.IEndpointSnitch;
-import org.apache.cassandra.locator.SeedProvider;
-import org.apache.cassandra.net.MessagingService;
-import org.apache.cassandra.scheduler.IRequestScheduler;
-import org.apache.cassandra.scheduler.NoScheduler;
-import org.apache.cassandra.service.CacheService;
-import org.apache.cassandra.utils.ByteBufferUtil;
-import org.apache.cassandra.utils.FBUtilities;
-import org.apache.cassandra.utils.JVMStabilityInspector;
-import org.apache.cassandra.utils.memory.HeapPool;
-import org.apache.cassandra.utils.memory.NativePool;
-import org.apache.cassandra.utils.memory.MemtablePool;
-import org.apache.cassandra.utils.memory.SlabPool;
 
 public class DatabaseDescriptor
 {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseDescriptor.class);
-
     /**
      * Tokens are serialized in a Gossip VersionedValue String.  VV are restricted to 64KB
      * when we send them over the wire, which works out to about 1700 tokens.
@@ -123,31 +44,16 @@ public class DatabaseDescriptor
         // In client mode, we use a default configuration. Note that the fields of this class will be
         // left unconfigured however (the partitioner or localDC will be null for instance) so this
         // should be used with care.
-        try
+        
+        if (Config.isClientMode())
         {
-            if (Config.isClientMode())
-            {
-                conf = new Config();
-                // at least we have to set memoryAllocator to open SSTable in client mode
-                memoryAllocator = FBUtilities.newOffHeapAllocator(conf.memory_allocator);
-            }
-            else
-            {
-                applyConfig(loadConfig());
-            }
+            conf = new Config();
+            // at least we have to set memoryAllocator to open SSTable in client mode
+            memoryAllocator = FBUtilities.newOffHeapAllocator(conf.memory_allocator);
         }
-        catch (ConfigurationException e)
+        else
         {
-            logger.error("Fatal configuration error", e);
-            System.err.println(e.getMessage() + "\nFatal configuration error; unable to start. See log for stacktrace.");
-            System.exit(1);
-        }
-        catch (Exception e)
-        {
-            logger.error("Fatal error during configuration loading", e);
-            System.err.println(e.getMessage() + "\nFatal error during configuration loading; unable to start. See log for stacktrace.");
-            JVMStabilityInspector.inspectThrowable(e);
-            System.exit(1);
+            applyConfig(loadConfig());
         }
     }
 
@@ -163,32 +69,25 @@ public class DatabaseDescriptor
 
     private static InetAddress getNetworkInterfaceAddress(String intf, String configName, boolean preferIPv6) throws ConfigurationException
     {
-        try
-        {
-            NetworkInterface ni = NetworkInterface.getByName(intf);
-            if (ni == null)
-                throw new ConfigurationException("Configured " + configName + " \"" + intf + "\" could not be found");
-            Enumeration<InetAddress> addrs = ni.getInetAddresses();
-            if (!addrs.hasMoreElements())
-                throw new ConfigurationException("Configured " + configName + " \"" + intf + "\" was found, but had no addresses");
+        NetworkInterface ni = NetworkInterface.getByName(intf);
 
-            /*
-             * Try to return the first address of the preferred type, otherwise return the first address
-             */
-            InetAddress retval = null;
-            while (addrs.hasMoreElements())
-            {
-                InetAddress temp = addrs.nextElement();
-                if (preferIPv6 && temp.getClass() == Inet6Address.class) return temp;
-                if (!preferIPv6 && temp.getClass() == Inet4Address.class) return temp;
-                if (retval == null) retval = temp;
-            }
-            return retval;
-        }
-        catch (SocketException e)
+        Enumeration<InetAddress> addrs = ni.getInetAddresses();
+        if (!addrs.hasMoreElements())
+            throw new ConfigurationException("Configured " + configName + " \"" + intf + "\" was found, but had no addresses");
+
+        /*
+         * Try to return the first address of the preferred type, otherwise return the first address
+         */
+        InetAddress retval = null;
+        while (addrs.hasMoreElements())
         {
-            throw new ConfigurationException("Configured " + configName + " \"" + intf + "\" caused an exception", e);
+            InetAddress temp = addrs.nextElement();
+            if (preferIPv6 && temp.getClass() == Inet6Address.class) return temp;
+            if (!preferIPv6 && temp.getClass() == Inet4Address.class) return temp;
+            if (retval == null) retval = temp;
         }
+        return retval;
+
     }
 
     @VisibleForTesting
@@ -206,14 +105,7 @@ public class DatabaseDescriptor
         }
         else if (config.listen_address != null)
         {
-            try
-            {
-                listenAddress = InetAddress.getByName(config.listen_address);
-            }
-            catch (UnknownHostException e)
-            {
-                throw new ConfigurationException("Unknown listen_address '" + config.listen_address + "'");
-            }
+            listenAddress = InetAddress.getByName(config.listen_address);
 
             if (listenAddress.isAnyLocalAddress())
                 throw new ConfigurationException("listen_address cannot be a wildcard address (" + config.listen_address + ")!");
@@ -226,14 +118,7 @@ public class DatabaseDescriptor
         /* Gossip Address to broadcast */
         if (config.broadcast_address != null)
         {
-            try
-            {
-                broadcastAddress = InetAddress.getByName(config.broadcast_address);
-            }
-            catch (UnknownHostException e)
-            {
-                throw new ConfigurationException("Unknown broadcast_address '" + config.broadcast_address + "'");
-            }
+            broadcastAddress = InetAddress.getByName(config.broadcast_address);
 
             if (broadcastAddress.isAnyLocalAddress())
                 throw new ConfigurationException("broadcast_address cannot be a wildcard address (" + config.broadcast_address + ")!");
@@ -246,14 +131,7 @@ public class DatabaseDescriptor
         }
         else if (config.rpc_address != null)
         {
-            try
-            {
-                rpcAddress = InetAddress.getByName(config.rpc_address);
-            }
-            catch (UnknownHostException e)
-            {
-                throw new ConfigurationException("Unknown host in rpc_address " + config.rpc_address);
-            }
+            rpcAddress = InetAddress.getByName(config.rpc_address);
         }
         else if (config.rpc_interface != null)
         {
@@ -267,14 +145,7 @@ public class DatabaseDescriptor
         /* RPC address to broadcast */
         if (config.broadcast_rpc_address != null)
         {
-            try
-            {
-                broadcastRpcAddress = InetAddress.getByName(config.broadcast_rpc_address);
-            }
-            catch (UnknownHostException e)
-            {
-                throw new ConfigurationException("Unknown broadcast_rpc_address '" + config.broadcast_rpc_address + "'");
-            }
+            broadcastRpcAddress = InetAddress.getByName(config.broadcast_rpc_address);
 
             if (broadcastRpcAddress.isAnyLocalAddress())
                 throw new ConfigurationException("broadcast_rpc_address cannot be a wildcard address (" + config.broadcast_rpc_address + ")!");
@@ -491,14 +362,6 @@ public class DatabaseDescriptor
                 }
                 Class<?> cls = Class.forName(conf.request_scheduler);
                 requestScheduler = (IRequestScheduler) cls.getConstructor(RequestSchedulerOptions.class).newInstance(requestSchedulerOptions);
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new ConfigurationException("Invalid Request Scheduler class " + conf.request_scheduler);
-            }
-            catch (Exception e)
-            {
-                throw new ConfigurationException("Unable to instantiate request scheduler", e);
             }
         }
         else
@@ -795,18 +658,6 @@ public class DatabaseDescriptor
                 throw new ConfigurationException("saved_caches_directory must be specified");
 
             FileUtils.createDirectory(conf.saved_caches_directory);
-        }
-        catch (ConfigurationException e)
-        {
-            logger.error("Fatal error: {}", e.getMessage());
-            System.err.println("Bad configuration; unable to start server");
-            System.exit(1);
-        }
-        catch (FSWriteError e)
-        {
-            logger.error("Fatal error: {}", e.getMessage());
-            System.err.println(e.getCause().getMessage() + "; unable to start server");
-            System.exit(1);
         }
     }
 

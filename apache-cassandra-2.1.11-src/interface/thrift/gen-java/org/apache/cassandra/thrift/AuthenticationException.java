@@ -72,7 +72,7 @@ public class AuthenticationException extends TException implements TBase<Authent
   public String why; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-  public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+  public enum _Fields implements TFieldIdEnum {
     WHY((short)1, "why");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
@@ -130,13 +130,13 @@ public class AuthenticationException extends TException implements TBase<Authent
   }
 
   // isset id assignments
-  public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+  public static final Map<_Fields, FieldMetaData> metaDataMap;
   static {
-    Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.WHY, new org.apache.thrift.meta_data.FieldMetaData("why", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    Map<_Fields, FieldMetaData> tmpMap = new EnumMap<_Fields, FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.WHY, new FieldMetaData("why", TFieldRequirementType.REQUIRED, 
+        new FieldValueMetaData(TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(AuthenticationException.class, metaDataMap);
+    FieldMetaData.addStructMetaDataMap(AuthenticationException.class, metaDataMap);
   }
 
   public AuthenticationException() {

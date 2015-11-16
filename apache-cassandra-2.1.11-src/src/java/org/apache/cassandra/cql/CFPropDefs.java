@@ -1,40 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.cql;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.config.CFMetaData;
-import org.apache.cassandra.exceptions.ConfigurationException;
-import org.apache.cassandra.db.compaction.AbstractCompactionStrategy;
-import org.apache.cassandra.db.marshal.AbstractType;
-import org.apache.cassandra.db.marshal.TypeParser;
-import org.apache.cassandra.exceptions.InvalidRequestException;
-import org.apache.cassandra.exceptions.SyntaxException;
-import org.apache.commons.lang3.StringUtils;
 
 public class CFPropDefs {
     private static final Logger logger = LoggerFactory.getLogger(CFPropDefs.class);
@@ -161,25 +125,17 @@ public class CFPropDefs {
         if ((minCompaction != null) && (maxCompaction != null))     // Both min and max are set
         {
             if ((minCompaction > maxCompaction) && (maxCompaction != 0))
-                throw new InvalidRequestException(String.format("%s cannot be larger than %s",
-                        KW_MINCOMPACTIONTHRESHOLD,
-                        KW_MAXCOMPACTIONTHRESHOLD));
+                throw;
         }
         else if (minCompaction != null)     // Only the min threshold is set
         {
             if (minCompaction > CFMetaData.DEFAULT_MAX_COMPACTION_THRESHOLD)
-                throw new InvalidRequestException(String.format("%s cannot be larger than %s, (default %s)",
-                        KW_MINCOMPACTIONTHRESHOLD,
-                        KW_MAXCOMPACTIONTHRESHOLD,
-                        CFMetaData.DEFAULT_MAX_COMPACTION_THRESHOLD));
+                throw ;
         }
         else if (maxCompaction != null)     // Only the max threshold is set
         {
             if ((maxCompaction < CFMetaData.DEFAULT_MIN_COMPACTION_THRESHOLD) && (maxCompaction != 0))
-                throw new InvalidRequestException(String.format("%s cannot be smaller than %s, (default %s)",
-                        KW_MAXCOMPACTIONTHRESHOLD,
-                        KW_MINCOMPACTIONTHRESHOLD,
-                        CFMetaData.DEFAULT_MIN_COMPACTION_THRESHOLD));
+                throw;
         }
 
         Integer defaultTimeToLive = getPropertyInt(KW_DEFAULT_TIME_TO_LIVE, null);
@@ -187,10 +143,7 @@ public class CFPropDefs {
         if (defaultTimeToLive != null)
         {
             if (defaultTimeToLive < 0)
-                throw new InvalidRequestException(String.format("%s cannot be smaller than %s, (default %s)",
-                        KW_DEFAULT_TIME_TO_LIVE,
-                        0,
-                        CFMetaData.DEFAULT_DEFAULT_TIME_TO_LIVE));
+                throw;
         }
 
         CFMetaData.validateCompactionOptions(compactionStrategyClass, compactionStrategyOptions);
@@ -254,14 +207,7 @@ public class CFPropDefs {
             result = defaultValue;
         else
         {
-            try
-            {
-                result = Double.valueOf(value);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new InvalidRequestException(String.format("%s not valid for \"%s\"", value, key));
-            }
+            result = Double.valueOf(value);
         }
         return result;
     }
@@ -276,14 +222,7 @@ public class CFPropDefs {
             result = defaultValue;
         else
         {
-            try
-            {
-                result = Integer.valueOf(value);
-            }
-            catch (NumberFormatException e)
-            {
-                throw new InvalidRequestException(String.format("%s not valid for \"%s\"", value, key));
-            }
+            result = Integer.valueOf(value);
         }
         return result;
     }
@@ -294,13 +233,5 @@ public class CFPropDefs {
         if (Strings.isNullOrEmpty(value))
             return defaultValue;
         return Sets.newHashSet(StringUtils.split(value, ','));
-    }
-
-    public String toString()
-    {
-        return String.format("CFPropDefs(%s, compaction: %s, compression: %s)",
-                             properties.toString(),
-                             compactionStrategyOptions.toString(),
-                             compressionParameters.toString());
     }
 }

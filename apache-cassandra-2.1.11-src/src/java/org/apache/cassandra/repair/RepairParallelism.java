@@ -1,4 +1,4 @@
-package org.apache.cassandra.repair;
+
 
 /**
  * Specify the degree of parallelism when calculating the merkle trees in a repair job.

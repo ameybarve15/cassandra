@@ -1,41 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.gms;
 
-import java.io.*;
-
-import java.net.InetAddress;
-import java.util.Collection;
-import java.util.UUID;
-
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
-
-import com.google.common.collect.Iterables;
-
-import org.apache.cassandra.db.TypeSizes;
-import org.apache.cassandra.dht.IPartitioner;
-import org.apache.cassandra.dht.Token;
-import org.apache.cassandra.io.IVersionedSerializer;
-import org.apache.cassandra.io.util.DataOutputPlus;
-import org.apache.cassandra.net.MessagingService;
-import org.apache.cassandra.utils.FBUtilities;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -247,32 +210,6 @@ public class VersionedValue implements Comparable<VersionedValue>
         public VersionedValue severity(double value)
         {
             return new VersionedValue(String.valueOf(value));
-        }
-    }
-
-    private static class VersionedValueSerializer implements IVersionedSerializer<VersionedValue>
-    {
-        public void serialize(VersionedValue value, DataOutputPlus out, int version) throws IOException
-        {
-            out.writeUTF(outValue(value, version));
-            out.writeInt(value.version);
-        }
-
-        private String outValue(VersionedValue value, int version)
-        {
-            return value.value;
-        }
-
-        public VersionedValue deserialize(DataInput in, int version) throws IOException
-        {
-            String value = in.readUTF();
-            int valVersion = in.readInt();
-            return new VersionedValue(value, valVersion);
-        }
-
-        public long serializedSize(VersionedValue value, int version)
-        {
-            return TypeSizes.NATIVE.sizeof(outValue(value, version)) + TypeSizes.NATIVE.sizeof(value.version);
         }
     }
 }

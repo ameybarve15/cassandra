@@ -1,64 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.apache.cassandra.service;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.apache.cassandra.concurrent.JMXConfigurableThreadPoolExecutor;
-import org.apache.cassandra.concurrent.NamedThreadFactory;
-import org.apache.cassandra.db.ColumnFamilyStore;
-import org.apache.cassandra.db.compaction.CompactionManager;
-import org.apache.cassandra.dht.Range;
-import org.apache.cassandra.dht.Token;
-import org.apache.cassandra.gms.FailureDetector;
-import org.apache.cassandra.gms.Gossiper;
-import org.apache.cassandra.io.sstable.Component;
-import org.apache.cassandra.io.sstable.SSTableReader;
-import org.apache.cassandra.locator.TokenMetadata;
-import org.apache.cassandra.net.IAsyncCallbackWithFailure;
-import org.apache.cassandra.net.MessageIn;
-import org.apache.cassandra.net.MessageOut;
-import org.apache.cassandra.net.MessagingService;
-import org.apache.cassandra.repair.*;
-import org.apache.cassandra.repair.messages.PrepareMessage;
-import org.apache.cassandra.repair.messages.RepairMessage;
-import org.apache.cassandra.repair.messages.SyncComplete;
-import org.apache.cassandra.repair.messages.ValidationComplete;
-import org.apache.cassandra.utils.FBUtilities;
-import org.apache.cassandra.utils.UUIDGen;
-import org.apache.cassandra.utils.concurrent.Ref;
-
-import org.apache.cassandra.utils.concurrent.Refs;
 
 /**
  * ActiveRepairService is the starting point for manual "active" repairs.
@@ -119,10 +59,10 @@ public class ActiveRepairService
      *
      * @return Future for asynchronous call or null if there is no need to repair
      */
-    public RepairFuture submitRepairSession(UUID parentRepairSession, Range<Token> range, String keyspace, RepairParallelism parallelismDegree, Set<InetAddress> endpoints, String... cfnames)
+    public RepairFuture submitRepairSession(
+        UUID parentRepairSession, Range<Token> range, String keyspace, 
+        RepairParallelism parallelismDegree, Set<InetAddress> endpoints, String... cfnames)
     {
-        if (cfnames.length == 0)
-            return null;
         RepairSession session = new RepairSession(parentRepairSession, range, keyspace, parallelismDegree, endpoints, cfnames);
         if (session.endpoints.isEmpty())
             return null;
@@ -159,7 +99,9 @@ public class ActiveRepairService
     {
         Set<InetAddress> neighbours = new HashSet<>();
         neighbours.addAll(ActiveRepairService.getNeighbors(desc.keyspace, desc.range, null, null));
-        RepairSession session = new RepairSession(desc.parentSessionId, desc.sessionId, desc.range, desc.keyspace, RepairParallelism.PARALLEL, neighbours, new String[]{desc.columnFamily});
+        RepairSession session 
+            = new RepairSession(desc.parentSessionId, desc.sessionId, desc.range, desc.keyspace, 
+                    RepairParallelism.PARALLEL, neighbours, new String[]{desc.columnFamily});
         sessions.put(session.getId(), session);
         RepairFuture futureTask = new RepairFuture(session);
         executor.execute(futureTask);
@@ -175,7 +117,8 @@ public class ActiveRepairService
      *
      * @return neighbors with whom we share the provided range
      */
-    public static Set<InetAddress> getNeighbors(String keyspaceName, Range<Token> toRepair, Collection<String> dataCenters, Collection<String> hosts)
+    public static Set<InetAddress> getNeighbors(String keyspaceName, Range<Token> toRepair, 
+                    Collection<String> dataCenters, Collection<String> hosts)
     {
         StorageService ss = StorageService.instance;
         Map<Range<Token>, List<InetAddress>> replicaSets = ss.getRangeToAddressMap(keyspaceName);
@@ -216,16 +159,9 @@ public class ActiveRepairService
             Set<InetAddress> specifiedHost = new HashSet<>();
             for (final String host : hosts)
             {
-                try
-                {
-                    final InetAddress endpoint = InetAddress.getByName(host.trim());
-                    if (endpoint.equals(FBUtilities.getBroadcastAddress()) || neighbors.contains(endpoint))
-                        specifiedHost.add(endpoint);
-                }
-                catch (UnknownHostException e)
-                {
-                    throw new IllegalArgumentException("Unknown host specified " + host, e);
-                }
+                final InetAddress endpoint = InetAddress.getByName(host.trim());
+                if (endpoint.equals(FBUtilities.getBroadcastAddress()) || neighbors.contains(endpoint))
+                    specifiedHost.add(endpoint);
             }
 
             if (!specifiedHost.contains(FBUtilities.getBroadcastAddress()))
@@ -462,17 +398,6 @@ public class ActiveRepairService
                 existingSSTables = new HashSet<>();
             existingSSTables.addAll(sstables);
             this.sstableMap.put(cfId, existingSSTables);
-        }
-
-        @Override
-        public String toString()
-        {
-            return "ParentRepairSession{" +
-                    "columnFamilyStores=" + columnFamilyStores +
-                    ", ranges=" + ranges +
-                    ", sstableMap=" + sstableMap +
-                    ", repairedAt=" + repairedAt +
-                    '}';
         }
     }
 }
