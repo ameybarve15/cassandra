@@ -100,22 +100,13 @@ public class FileCacheService
 
     private CacheBucket getCacheFor(CacheKey key)
     {
-        try
-        {
-            return cache.get(key, cacheForPathCreator);
-        }
-        catch (ExecutionException e)
-        {
-            throw new AssertionError(e);
-        }
+        return cache.get(key, cacheForPathCreator);
     }
 
     public void put(CacheKey cacheKey, RandomAccessReader instance)
     {
         int memoryUsed = memoryUsage.get();
-        if (logger.isDebugEnabled())
-            logger.debug("Estimated memory usage is {} compared to actual usage {}", memoryUsed, sizeInBytes());
-
+        
         CacheBucket bucket = cache.getIfPresent(cacheKey);
         if (memoryUsed >= MEMORY_USAGE_THRESHOLD || bucket == null)
         {
@@ -139,8 +130,6 @@ public class FileCacheService
 
     public void invalidate(CacheKey cacheKey, String path)
     {
-        if (logger.isDebugEnabled())
-            logger.debug("Invalidating cache for {}", path);
         cache.invalidate(cacheKey);
     }
 

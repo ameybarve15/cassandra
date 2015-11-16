@@ -511,9 +511,7 @@ public interface StorageServiceMBean extends NotificationEmitter
 
     public void deliverHints(String host) throws UnknownHostException;
 
-    /** Returns the name of the cluster */
     public String getClusterName();
-    /** Returns the cluster partitioner */
     public String getPartitionerName();
 
     /** Returns the threshold for warning of queries with many tombstones */

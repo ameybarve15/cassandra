@@ -38,9 +38,6 @@ public class RowDigestResolver extends AbstractRowResolver
      */
     public Row resolve() throws DigestMismatchException
     {
-        if (logger.isDebugEnabled())
-            logger.debug("resolving {} responses", replies.size());
-
         long start = System.nanoTime();
 
         // validate digests against each other; throw immediately on mismatch.
@@ -73,8 +70,6 @@ public class RowDigestResolver extends AbstractRowResolver
                 throw new DigestMismatchException(key, digest, newDigest);
         }
 
-        if (logger.isDebugEnabled())
-            logger.debug("resolve: {} ms.", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
         return new Row(key, data);
     }
 

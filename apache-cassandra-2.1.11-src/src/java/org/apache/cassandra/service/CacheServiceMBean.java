@@ -55,80 +55,17 @@ public interface CacheServiceMBean
      */
     @Deprecated
     public long getKeyCacheHits();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#hits
-     */
-    @Deprecated
     public long getRowCacheHits();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#requests
-     */
-    @Deprecated
     public long getKeyCacheRequests();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#requests
-     */
-    @Deprecated
     public long getRowCacheRequests();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#hitRate
-     */
-    @Deprecated
     public double getKeyCacheRecentHitRate();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#hitRate
-     */
-    @Deprecated
     public double getRowCacheRecentHitRate();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#capacity
-     */
-    @Deprecated
     public long getRowCacheCapacityInMB();
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#capacity
-     */
-    @Deprecated
     public long getRowCacheCapacityInBytes();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#capacity
-     */
-    @Deprecated
     public long getKeyCacheCapacityInMB();
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#capacity
-     */
-    @Deprecated
     public long getKeyCacheCapacityInBytes();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#size
-     */
-    @Deprecated
     public long getRowCacheSize();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#entries
-     */
-    @Deprecated
     public long getRowCacheEntries();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#size
-     */
-    @Deprecated
     public long getKeyCacheSize();
-
-    /**
-     * @see org.apache.cassandra.metrics.CacheMetrics#entries
-     */
-    @Deprecated
     public long getKeyCacheEntries();
 }

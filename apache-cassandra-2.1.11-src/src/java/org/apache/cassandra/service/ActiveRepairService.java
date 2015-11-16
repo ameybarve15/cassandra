@@ -59,10 +59,10 @@ public class ActiveRepairService
      *
      * @return Future for asynchronous call or null if there is no need to repair
      */
-    public RepairFuture submitRepairSession(UUID parentRepairSession, Range<Token> range, String keyspace, RepairParallelism parallelismDegree, Set<InetAddress> endpoints, String... cfnames)
+    public RepairFuture submitRepairSession(
+        UUID parentRepairSession, Range<Token> range, String keyspace, 
+        RepairParallelism parallelismDegree, Set<InetAddress> endpoints, String... cfnames)
     {
-        if (cfnames.length == 0)
-            return null;
         RepairSession session = new RepairSession(parentRepairSession, range, keyspace, parallelismDegree, endpoints, cfnames);
         if (session.endpoints.isEmpty())
             return null;
@@ -99,7 +99,9 @@ public class ActiveRepairService
     {
         Set<InetAddress> neighbours = new HashSet<>();
         neighbours.addAll(ActiveRepairService.getNeighbors(desc.keyspace, desc.range, null, null));
-        RepairSession session = new RepairSession(desc.parentSessionId, desc.sessionId, desc.range, desc.keyspace, RepairParallelism.PARALLEL, neighbours, new String[]{desc.columnFamily});
+        RepairSession session 
+            = new RepairSession(desc.parentSessionId, desc.sessionId, desc.range, desc.keyspace, 
+                    RepairParallelism.PARALLEL, neighbours, new String[]{desc.columnFamily});
         sessions.put(session.getId(), session);
         RepairFuture futureTask = new RepairFuture(session);
         executor.execute(futureTask);
@@ -115,7 +117,8 @@ public class ActiveRepairService
      *
      * @return neighbors with whom we share the provided range
      */
-    public static Set<InetAddress> getNeighbors(String keyspaceName, Range<Token> toRepair, Collection<String> dataCenters, Collection<String> hosts)
+    public static Set<InetAddress> getNeighbors(String keyspaceName, Range<Token> toRepair, 
+                    Collection<String> dataCenters, Collection<String> hosts)
     {
         StorageService ss = StorageService.instance;
         Map<Range<Token>, List<InetAddress>> replicaSets = ss.getRangeToAddressMap(keyspaceName);
@@ -156,16 +159,9 @@ public class ActiveRepairService
             Set<InetAddress> specifiedHost = new HashSet<>();
             for (final String host : hosts)
             {
-                try
-                {
-                    final InetAddress endpoint = InetAddress.getByName(host.trim());
-                    if (endpoint.equals(FBUtilities.getBroadcastAddress()) || neighbors.contains(endpoint))
-                        specifiedHost.add(endpoint);
-                }
-                catch (UnknownHostException e)
-                {
-                    throw new IllegalArgumentException("Unknown host specified " + host, e);
-                }
+                final InetAddress endpoint = InetAddress.getByName(host.trim());
+                if (endpoint.equals(FBUtilities.getBroadcastAddress()) || neighbors.contains(endpoint))
+                    specifiedHost.add(endpoint);
             }
 
             if (!specifiedHost.contains(FBUtilities.getBroadcastAddress()))
@@ -402,17 +398,6 @@ public class ActiveRepairService
                 existingSSTables = new HashSet<>();
             existingSSTables.addAll(sstables);
             this.sstableMap.put(cfId, existingSSTables);
-        }
-
-        @Override
-        public String toString()
-        {
-            return "ParentRepairSession{" +
-                    "columnFamilyStores=" + columnFamilyStores +
-                    ", ranges=" + ranges +
-                    ", sstableMap=" + sstableMap +
-                    ", repairedAt=" + repairedAt +
-                    '}';
         }
     }
 }

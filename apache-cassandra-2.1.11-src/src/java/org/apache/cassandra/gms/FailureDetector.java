@@ -261,23 +261,6 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
         fdEvntListeners.remove(listener);
     }
 
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder();
-        Set<InetAddress> eps = arrivalSamples.keySet();
-
-        sb.append("-----------------------------------------------------------------------");
-        for (InetAddress ep : eps)
-        {
-            ArrivalWindow hWnd = arrivalSamples.get(ep);
-            sb.append(ep + " : ");
-            sb.append(hWnd.toString());
-            sb.append(System.getProperty("line.separator"));
-        }
-        sb.append("-----------------------------------------------------------------------");
-        return sb.toString();
-    }
-
     public static void main(String[] args)
     {
     }

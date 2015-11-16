@@ -404,34 +404,4 @@ public class MigrationManager
         logger.info("Local schema reset is complete.");
     }
 
-    public static class MigrationsSerializer implements IVersionedSerializer<Collection<Mutation>>
-    {
-        public static MigrationsSerializer instance = new MigrationsSerializer();
-
-        public void serialize(Collection<Mutation> schema, DataOutputPlus out, int version) throws IOException
-        {
-            out.writeInt(schema.size());
-            for (Mutation mutation : schema)
-                Mutation.serializer.serialize(mutation, out, version);
-        }
-
-        public Collection<Mutation> deserialize(DataInput in, int version) throws IOException
-        {
-            int count = in.readInt();
-            Collection<Mutation> schema = new ArrayList<Mutation>(count);
-
-            for (int i = 0; i < count; i++)
-                schema.add(Mutation.serializer.deserialize(in, version));
-
-            return schema;
-        }
-
-        public long serializedSize(Collection<Mutation> schema, int version)
-        {
-            int size = TypeSizes.NATIVE.sizeof(schema.size());
-            for (Mutation mutation : schema)
-                size += Mutation.serializer.serializedSize(mutation, version);
-            return size;
-        }
-    }
 }

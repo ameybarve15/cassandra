@@ -18,18 +18,12 @@ public class TruncateResponseHandler implements IAsyncCallback
         start = System.nanoTime();
     }
 
-    public void get() throws TimeoutException
+    public void get()
     {
         long timeout = TimeUnit.MILLISECONDS.toNanos(DatabaseDescriptor.getTruncateRpcTimeout()) - (System.nanoTime() - start);
         boolean success;
-        try
-        {
-            success = condition.await(timeout, TimeUnit.NANOSECONDS); // TODO truncate needs a much longer timeout
-        }
-        catch (InterruptedException ex)
-        {
-            throw new AssertionError(ex);
-        }
+        
+        success = condition.await(timeout, TimeUnit.NANOSECONDS); // TODO truncate needs a much longer timeout
 
         if (!success)
         {

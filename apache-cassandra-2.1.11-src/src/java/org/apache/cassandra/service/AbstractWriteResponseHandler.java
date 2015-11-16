@@ -37,15 +37,7 @@ public abstract class AbstractWriteResponseHandler implements IAsyncCallback
 
         long timeout = TimeUnit.MILLISECONDS.toNanos(requestTimeout) - (System.nanoTime() - start);
 
-        boolean success;
-        try
-        {
-            success = condition.await(timeout, TimeUnit.NANOSECONDS);
-        }
-        catch (InterruptedException ex)
-        {
-            throw new AssertionError(ex);
-        }
+        boolean success = condition.await(timeout, TimeUnit.NANOSECONDS);
 
         if (!success)
         {
@@ -80,7 +72,6 @@ public abstract class AbstractWriteResponseHandler implements IAsyncCallback
     protected void signal()
     {
         condition.signalAll();
-        if (callback != null)
-            callback.run();
+        callback.run();
     }
 }

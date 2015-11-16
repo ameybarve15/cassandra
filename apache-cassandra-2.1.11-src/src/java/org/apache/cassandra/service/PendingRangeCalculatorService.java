@@ -37,14 +37,7 @@ public class PendingRangeCalculatorService
         {
             if (executor.getActiveCount() + executor.getPendingTasks() == 0)
                 break;
-            try
-            {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException e)
-            {
-                throw new RuntimeException(e);
-            }
+            Thread.sleep(100);
         }
     }
 
@@ -81,8 +74,6 @@ public class PendingRangeCalculatorService
 
         if (bootstrapTokens.isEmpty() && leavingEndpoints.isEmpty() && tm.getMovingEndpoints().isEmpty())
         {
-            if (logger.isDebugEnabled())
-                logger.debug("No bootstrapping, leaving or moving nodes, and no relocating tokens -> empty pending ranges for {}", keyspaceName);
             tm.setPendingRanges(keyspaceName, pendingRanges);
             return;
         }
@@ -144,8 +135,5 @@ public class PendingRangeCalculatorService
         }
 
         tm.setPendingRanges(keyspaceName, pendingRanges);
-
-        if (logger.isDebugEnabled())
-            logger.debug("Pending ranges:\n" + (pendingRanges.isEmpty() ? "<empty>" : tm.printPendingRanges()));
     }
 }

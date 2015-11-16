@@ -22,11 +22,6 @@ public class CassandraDaemon
 
             jmxPort = System.getProperty("cassandra.jmx.local.port");
 
-            if (jmxPort == null)
-            {
-                logger.error("cassandra.jmx.local.port missing from cassandra-env.sh, unable to start local JMX service." + jmxPort);
-            }
-            else
             {
                 System.setProperty("java.rmi.server.hostname", InetAddress.getLoopbackAddress().getHostAddress());
 
@@ -211,23 +206,13 @@ public class CassandraDaemon
             }
         }
 
-        if (CacheService.instance == null) // should never happen
-            throw new RuntimeException("Failed to initialize Cache Service.");
-
         // check the system keyspace to keep user from shooting self in foot by changing partitioner, cluster name, etc.
         // we do a one-off scrub of the system keyspace first; we can't load the list of the rest of the keyspaces,
         // until system keyspace is opened.
         for (CFMetaData cfm : Schema.instance.getKeyspaceMetaData(Keyspace.SYSTEM_KS).values())
             ColumnFamilyStore.scrubDataDirectories(cfm);
-        try
-        {
-            SystemKeyspace.checkHealth();
-        }
-        catch (ConfigurationException e)
-        {
-            logger.error("Fatal exception during initialization", e);
-            System.exit(100);
-        }
+        
+        SystemKeyspace.checkHealth();
 
         // load keyspace descriptions.
         DatabaseDescriptor.loadSchemas();
@@ -270,36 +255,12 @@ public class CassandraDaemon
             }
         }
 
+        loadRowAndKeyCacheAsync().get();
 
-        try
-        {
-            loadRowAndKeyCacheAsync().get();
-        }
-        catch (Throwable t)
-        {
-            JVMStabilityInspector.inspectThrowable(t);
-            logger.warn("Error loading key or row cache", t);
-        }
-
-        try
-        {
-            GCInspector.register();
-        }
-        catch (Throwable t)
-        {
-            JVMStabilityInspector.inspectThrowable(t);
-            logger.warn("Unable to start GCInspector (currently only supported on the Sun JVM)");
-        }
+        GCInspector.register();
 
         // replay the log if necessary
-        try
-        {
-            CommitLog.instance.recover();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        CommitLog.instance.recover();
 
         // enable auto compaction
         for (Keyspace keyspace : Keyspace.all())
@@ -318,16 +279,7 @@ public class CassandraDaemon
 
         // start server internals
         StorageService.instance.registerDaemon(this);
-        try
-        {
-            StorageService.instance.initServer();
-        }
-        catch (ConfigurationException e)
-        {
-            logger.error("Fatal configuration error", e);
-            System.err.println(e.getMessage() + "\nFatal configuration error; unable to start server.  See log for stacktrace.");
-            System.exit(1);
-        }
+        StorageService.instance.initServer();
 
         Mx4jTool.maybeLoad();
 
@@ -426,14 +378,10 @@ public class CassandraDaemon
         String nativeFlag = System.getProperty("cassandra.start_native_transport");
         if ((nativeFlag != null && Boolean.parseBoolean(nativeFlag)) || (nativeFlag == null && DatabaseDescriptor.startNativeTransport()))
             nativeServer.start();
-        else
-            logger.info("Not starting native transport as requested. Use JMX (StorageService->startNativeTransport()) or nodetool (enablebinary) to start it");
-
+        
         String rpcFlag = System.getProperty("cassandra.start_rpc");
         if ((rpcFlag != null && Boolean.parseBoolean(rpcFlag)) || (rpcFlag == null && DatabaseDescriptor.startRpc()))
             thriftServer.start();
-        else
-            logger.info("Not starting RPC server as requested. Use JMX (StorageService->startRPCServer()) or nodetool (enablethrift) to start it");
     }
 
     /**
@@ -445,7 +393,6 @@ public class CassandraDaemon
     {
         // On linux, this doesn't entirely shut down Cassandra, just the RPC server.
         // jsvc takes care of taking the rest down
-        logger.info("Cassandra shutting down...");
         thriftServer.stop();
         nativeServer.stop();
 
@@ -456,14 +403,7 @@ public class CassandraDaemon
 
         if (jmxServer != null)
         {
-            try
-            {
-                jmxServer.stop();
-            }
-            catch (IOException e)
-            {
-                logger.error("Error shutting down local JMX server: ", e);
-            }
+            jmxServer.stop();
         }
     }
 
@@ -484,16 +424,8 @@ public class CassandraDaemon
 
         try
         {
-            try
-            {
-                MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-                mbs.registerMBean(new StandardMBean(new NativeAccess(), NativeAccessMBean.class), new ObjectName(MBEAN_NAME));
-            }
-            catch (Exception e)
-            {
-                logger.error("error registering MBean {}", MBEAN_NAME, e);
-                //Allow the server to start even if the bean can't be registered
-            }
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            mbs.registerMBean(new StandardMBean(new NativeAccess(), NativeAccessMBean.class), new ObjectName(MBEAN_NAME));
 
             setup();
 
@@ -509,16 +441,6 @@ public class CassandraDaemon
             }
 
             start();
-        }
-        catch (Throwable e)
-        {
-            logger.error("Exception encountered during startup", e);
-
-            // try to warn user on stdout too, if we haven't already detached
-            e.printStackTrace();
-            System.out.println("Exception encountered during startup: " + e.getMessage());
-
-            System.exit(3);
         }
     }
 
@@ -603,9 +525,7 @@ public class CassandraDaemon
     public interface Server
     {
         public void start();
-
         public void stop();
-
         public boolean isRunning();
     }
 }

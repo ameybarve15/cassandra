@@ -42,14 +42,7 @@ public class ReadCallback<TMessage, TResolved> implements IAsyncCallback<TMessag
     public boolean await(long timePastStart, TimeUnit unit)
     {
         long time = unit.toNanos(timePastStart) - (System.nanoTime() - start);
-        try
-        {
-            return condition.await(time, TimeUnit.NANOSECONDS);
-        }
-        catch (InterruptedException ex)
-        {
-            throw new AssertionError(ex);
-        }
+        return condition.await(time, TimeUnit.NANOSECONDS);
     }
 
     public TResolved get() throws ReadTimeoutException, DigestMismatchException

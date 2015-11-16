@@ -37,12 +37,6 @@ public class ClientState
             try
             {
                 handler = (QueryHandler)FBUtilities.construct(customHandlerClass, "QueryHandler");
-                logger.info("Using {} as query handler for native protocol queries (as requested with -Dcassandra.custom_query_handler_class)", customHandlerClass);
-            }
-            catch (Exception e)
-            {
-                JVMStabilityInspector.inspectThrowable(e);
-                logger.info("Cannot use class {} as query handler ({}), ignoring by defaulting on normal query handling", customHandlerClass, e.getMessage());
             }
         }
         cqlQueryHandler = handler;

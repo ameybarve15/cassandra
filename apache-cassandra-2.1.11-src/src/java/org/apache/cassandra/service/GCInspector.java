@@ -80,10 +80,6 @@ public class GCInspector implements NotificationListener, GCInspectorMXBean
 
             mbs.registerMBean(this, new ObjectName(MBEAN_NAME));
         }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void register() throws Exception

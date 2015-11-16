@@ -36,18 +36,7 @@ class MigrationTask extends WrappedRunnable
             @Override
             public void response(MessageIn<Collection<Mutation>> message)
             {
-                try
-                {
-                    DefsTables.mergeSchema(message.payload);
-                }
-                catch (IOException e)
-                {
-                    logger.error("IOException merging remote schema", e);
-                }
-                catch (ConfigurationException e)
-                {
-                    logger.error("Configuration exception merging remote schema", e);
-                }
+                DefsTables.mergeSchema(message.payload);
             }
 
             public boolean isLatencyForSnitch()
