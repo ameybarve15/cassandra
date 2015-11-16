@@ -601,7 +601,8 @@ struct MultiSliceRequest {
 
 service Cassandra {
   # auth methods
-  void login(1: required AuthenticationRequest auth_request) throws (1:AuthenticationException authnx, 2:AuthorizationException authzx),
+  void login(1: required AuthenticationRequest auth_request) 
+            throws (1:AuthenticationException authnx, 2:AuthorizationException authzx),
  
   # set keyspace
   void set_keyspace(1: required string keyspace) throws (1:InvalidRequestException ire),
@@ -615,7 +616,10 @@ service Cassandra {
   ColumnOrSuperColumn get(1:required binary key,
                           2:required ColumnPath column_path,
                           3:required ConsistencyLevel consistency_level=ConsistencyLevel.ONE)
-                      throws (1:InvalidRequestException ire, 2:NotFoundException nfe, 3:UnavailableException ue, 4:TimedOutException te),
+                      throws (  1:InvalidRequestException ire, 
+                                2:NotFoundException nfe, 
+                                3:UnavailableException ue, 
+                                4:TimedOutException te),
 
   /**
     Get the group of columns contained by column_parent (either a ColumnFamily name or a ColumnFamily/SuperColumn name
@@ -625,17 +629,24 @@ service Cassandra {
                                       2:required ColumnParent column_parent, 
                                       3:required SlicePredicate predicate, 
                                       4:required ConsistencyLevel consistency_level=ConsistencyLevel.ONE)
-                            throws (1:InvalidRequestException ire, 2:UnavailableException ue, 3:TimedOutException te),
+                            throws (
+                                1:InvalidRequestException ire, 
+                                2:UnavailableException ue, 
+                                3:TimedOutException te),
 
   /**
     returns the number of columns matching <code>predicate</code> for a particular <code>key</code>, 
     <code>ColumnFamily</code> and optionally <code>SuperColumn</code>.
   */
-  i32 get_count(1:required binary key, 
+  i32 get_count(
+                1:required binary key, 
                 2:required ColumnParent column_parent, 
                 3:required SlicePredicate predicate,
                 4:required ConsistencyLevel consistency_level=ConsistencyLevel.ONE)
-      throws (1:InvalidRequestException ire, 2:UnavailableException ue, 3:TimedOutException te),
+      throws (
+                1:InvalidRequestException ire, 
+                2:UnavailableException ue, 
+                3:TimedOutException te),
 
   /**
     Performs a get_slice for column_parent and predicate for the given keys in parallel.
